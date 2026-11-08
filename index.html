@@ -1297,5 +1297,45 @@
     </div>
   </div>
 
+
+  <script>
+    (async function syncLiveStock() {
+      const PROJECT_ID = "cherry-streaming-mx";
+      const BASE_URL = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents";
+      
+      try {
+        const res = await fetch(BASE_URL + "/inventory");
+        if (!res.ok) return;
+        const data = await res.json();
+        const docs = data.documents || [];
+        
+        const counts = {};
+        docs.forEach(d => {
+          const f = d.fields || {};
+          const alias = f.alias ? f.alias.stringValue : null;
+          const status = f.status ? f.status.stringValue : "disponible";
+          if (alias && status === "disponible") {
+            counts[alias] = (counts[alias] || 0) + 1;
+          }
+        });
+
+        // Actualizar badges en tarjetas existentes si tienen data-alias o texto identificador
+        document.querySelectorAll("[data-alias]").forEach(el => {
+          const alias = el.getAttribute("data-alias");
+          const cant = counts[alias] || 0;
+          if (cant > 0) {
+            el.innerHTML = "🟢 " + cant + " disponible" + (cant > 1 ? "s" : "");
+            el.className = el.className.replace(/badge-danger|badge-agotado/g, "") + " badge-disponible";
+          } else {
+            el.innerHTML = "🔴 Agotado";
+            el.className = el.className.replace(/badge-success|badge-disponible/g, "") + " badge-agotado";
+          }
+        });
+      } catch(e) {
+        console.warn("Stock listener:", e);
+      }
+    })();
+  </script>
+
 </body>
 </html>
