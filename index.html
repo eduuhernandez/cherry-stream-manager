@@ -904,6 +904,64 @@
 
 
 
+
+<script>
+  window.STOCK_MAP = {};
+
+  const ALIAS_MAP = {
+    'p1': ['net', 'netflix'],
+    'p2': ['nep', 'netflix priv', 'netflix privado'],
+    'p3': ['dis', 'disney standar', 'disney'],
+    'p4': ['dhu', 'disney hulu'],
+    'p5': ['max', 'hbo', 'max / hbo'],
+    'p6': ['prm', 'prime', 'prime video'],
+    'p7': ['par', 'paramount', 'paramount+'],
+    'p8': ['cru', 'crunchyroll'],
+    'p9': ['vix', 'vix (1 mes)']
+  };
+
+  async function fetchStoreInventory() {
+    try {
+      const res = await fetch("https://firestore.googleapis.com/v1/projects/cherry-streaming-mx/databases/(default)/documents/inventory");
+      if (!res.ok) return;
+      const data = await res.json();
+      const docs = data.documents || [];
+
+      window.STOCK_MAP = {};
+
+      docs.forEach(doc => {
+        const f = doc.fields || {};
+        const service = (f.service?.stringValue || f.servicio?.stringValue || "").toLowerCase().trim();
+        const status = (f.status?.stringValue || f.estado?.stringValue || "available").toLowerCase();
+
+        if (status === "available" || status === "disponible") {
+          window.STOCK_MAP[service] = (window.STOCK_MAP[service] || 0) + 1;
+        }
+      });
+
+      if (typeof renderStore === "function") {
+        renderStore();
+      }
+    } catch (e) {
+      console.warn("No se pudo conectar al inventario de Firestore:", e);
+    }
+  }
+
+  function getProductStock(p) {
+    const keys = ALIAS_MAP[p.id] || [p.name.toLowerCase().trim()];
+    let total = 0;
+    keys.forEach(k => {
+      if (window.STOCK_MAP[k]) total += window.STOCK_MAP[k];
+    });
+    return total;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchStoreInventory();
+    setInterval(fetchStoreInventory, 15000);
+  });
+</script>
+
 </head>
 <body>
 
@@ -1127,6 +1185,17 @@
           </div>
 
           <div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              ${(function(){
+                const qty = typeof getProductStock === 'function' ? getProductStock(p) : 0;
+                if (qty > 0) {
+                  return '<span style="background:rgba(46,125,50,0.12); color:#2e7d32; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">🟢 ' + qty + ' disponible' + (qty > 1 ? 's' : '') + '</span>';
+                } else {
+                  return '<span style="background:rgba(229,56,59,0.12); color:#e5383b; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">🔴 0 disponibles (Agotado)</span>';
+                }
+              })()}
+            </div>
             <div class="price-row">
               <span class="price-label">Precio</span>
               <div class="price-amount">$${p.price} <span>MXN</span></div>
