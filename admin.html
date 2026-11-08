@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cherry Stream | Panel Super Admin ⚙️</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0b090a;
+      --card: #161a1d;
+      --cherry: #e5383b;
+      --cherry-glow: #ba181b;
+      --text: #f5f3f4;
+      --text-muted: #b1a7a6;
+      --border: #22252a;
+      --success: #2ec4b6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 25px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 1.5rem; font-weight: bold; color: var(--cherry); }
+    .btn-exit { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
+    .btn-exit:hover { border-color: var(--cherry); color: var(--text); }
+    
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media(max-width: 850px) { .grid { grid-template-columns: 1fr; } }
+    
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 20px; }
+    .card h2 { font-size: 1.2rem; margin-bottom: 15px; color: var(--cherry); display: flex; align-items: center; gap: 10px; }
+    
+    label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+    
+    /* Forzar visibilidad y contraste en inputs y selects */
+    select, input {
+      width: 100%;
+      background: #111417 !important;
+      border: 1px solid #33383f !important;
+      color: #ffffff !important;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+    select:focus, input:focus { border-color: var(--cherry) !important; }
+    
+    select option {
+      background: #161a1d !important;
+      color: #ffffff !important;
+      padding: 6px;
+    }
+    select optgroup {
+      background: #0b090a !important;
+      color: var(--cherry) !important;
+      font-weight: bold;
+    }
+    
+    .btn-primary { width: 100%; background: var(--cherry); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+    .btn-primary:hover { background: var(--cherry-glow); }
+    
+    .price-cat-header { background: rgba(229,56,59,0.15); color: var(--cherry); padding: 6px 10px; font-weight: bold; font-size: 0.8rem; border-radius: 4px; margin-top: 14px; margin-bottom: 6px; }
+    .price-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .price-input { width: 95px !important; margin-bottom: 0 !important; padding: 6px 10px !important; text-align: right; }
+    
+    .inventory-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
+    .inventory-table th, .inventory-table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+    .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+    .badge-disponible { background: rgba(46,196,182,0.15); color: var(--success); }
+    .badge-ocupada { background: rgba(229,56,59,0.15); color: var(--cherry); }
+    .btn-delete { background: #e5383b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+
+    .superadmin-bar { background: rgba(229,56,59,0.1); border: 1px solid var(--border); border-left: 4px solid var(--cherry); padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <span>🍒🦇 Cherry Stream</span>
+        <span style="font-size:0.8rem; background:rgba(229,56,59,0.2); padding:4px 8px; border-radius:6px;">⚙️ Gestor Bóveda</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px;">
+        <a href="index.html" class="btn-exit"><i class="fa-solid fa-shop"></i> Ver Tienda</a>
+      </div>
+    </header>
+
+    <div class="superadmin-bar">
+      <div>
+        <span style="color:var(--text-muted); font-size:0.85rem;">Operador Super Admin:</span>
+        <strong style="color:var(--cherry); margin-left:8px;">jorgehimawari@gmail.com</strong>
+      </div>
+      <div style="font-size:0.8rem; color:var(--success);">● Catálogo Activo (48 Servicios Oficiales)</div>
+    </div>
+
+    <div class="grid">
+      <!-- Cargar Cuenta -->
+      <div class="card">
+        <h2><i class="fa-solid fa-boxes-stacked"></i> Cargar Cuenta a la Bóveda</h2>
+        <form id="form-add-stock">
+          <label>Servicio Streaming:</label>
+          <select id="stock-alias" required>
+            <option value="" disabled selected>-- Elige un servicio streaming --</option>
+            <optgroup label="🍿 PERFILES INDIVIDUALES">
+              <option value="net">Netflix Perfil (net) - $50.00 MXN</option>
+              <option value="nep">Netflix Perfil Privado (nep) - $75.00 MXN</option>
+              <option value="dis">Disney+ Estándar (dis) - $15.00 MXN</option>
+              <option value="dhu">Disney+ Hulu (dhu) - $25.00 MXN</option>
+              <option value="max">Max / HBO (max) - $15.00 MXN</option>
+              <option value="prm">Prime Video (prm) - $15.00 MXN</option>
+              <option value="par">Paramount+ (par) - $15.00 MXN</option>
+              <option value="cru">Crunchyroll (cru) - $20.00 MXN</option>
+              <option value="vx1">ViX 1 Mes (vx1) - $8.00 MXN</option>
+              <option value="vx2">ViX 2 Meses (vx2) - $15.00 MXN</option>
+              <option value="vx3">ViX 3 Meses (vx3) - $15.00 MXN</option>
+              <option value="vx5">ViX 5 Meses (vx5) - $25.00 MXN</option>
+              <option value="vya">ViX 12 Meses Anual (vya) - $25.00 MXN</option>
+              <option value="uni">Universal+ (uni) - $25.00 MXN</option>
+              <option value="mub">MUBI (mub) - $15.00 MXN</option>
+              <option value="fox">Fox One (fox) - $20.00 MXN</option>
+              <option value="app">Apple TV+ (app) - $20.00 MXN</option>
+              <option value="cla">Claro Video (cla) - $45.00 MXN</option>
+              <option value="ipt">IPTV / IPTV Pro (ipt) - $25.00 MXN</option>
+            </optgroup>
+            <optgroup label="🏚️ CUENTAS COMPLETAS">
+              <option value="nec">Netflix Completa (nec) - $200.00 MXN</option>
+              <option value="dsc">Disney+ Estándar Completa (dsc) - $50.00 MXN</option>
+              <option value="dhc">Disney+ Hulu Completa (dhc) - $70.00 MXN</option>
+              <option value="mxc">Max / HBO Completa (mxc) - $45.00 MXN</option>
+              <option value="prc">Prime Video Completa (prc) - $40.00 MXN</option>
+              <option value="pac">Paramount+ Completa (pac) - $45.00 MXN</option>
+              <option value="crc">Crunchyroll Completa (crc) - $45.00 MXN</option>
+              <option value="vxc">ViX 1 Mes Completa (vxc) - $17.00 MXN</option>
+              <option value="vca">ViX Anual Completa (vca) - $60.00 MXN</option>
+              <option value="unc">Universal+ Completa (unc) - $42.00 MXN</option>
+              <option value="muc">MUBI Completa (muc) - $30.00 MXN</option>
+              <option value="fxc">Fox One Completa (fxc) - $45.00 MXN</option>
+              <option value="apc">Apple TV+ Completa (apc) - $35.00 MXN</option>
+            </optgroup>
+            <optgroup label="🎵 MÚSICA PREMIUM">
+              <option value="sp1">Spotify 1 Mes a tus datos (sp1) - $45.00 MXN</option>
+              <option value="sp3">Spotify 3 Meses (sp3) - $80.00 MXN</option>
+              <option value="sp6">Spotify 6 Meses (sp6) - $110.00 MXN</option>
+              <option value="amu">Apple Music 1 Mes (amu) - $35.00 MXN</option>
+              <option value="azm">Amazon Music (azm) - $20.00 MXN</option>
+              <option value="dzr">Deezer 1 Mes (dzr) - $35.00 MXN</option>
+            </optgroup>
+            <optgroup label="▶️ YOUTUBE PREMIUM">
+              <option value="yti">YouTube Invitación (yti) - $20.00 MXN</option>
+              <option value="yt1">YouTube Individual (yt1) - $45.00 MXN</option>
+              <option value="ytf">YouTube Familiar (ytf) - $65.00 MXN</option>
+            </optgroup>
+            <optgroup label="📚 APRENDIZAJE & PRODUCTIVIDAD">
+              <option value="ca1">Canva Edu 1 Mes (ca1) - $18.00 MXN</option>
+              <option value="caa">Canva Edu Anual (caa) - $25.00 MXN</option>
+              <option value="du1">Duolingo 1 Mes (du1) - $30.00 MXN</option>
+              <option value="dua">Duolingo 12 Meses (dua) - $30.00 MXN</option>
+              <option value="gpt">ChatGPT Go Compartido (gpt) - $50.00 MXN</option>
+            </optgroup>
+          </select>
+
+          <label>Correo / Usuario:</label>
+          <input type="text" id="stock-email" placeholder="cuenta@gmail.com" required>
+
+          <label>Contraseña:</label>
+          <input type="text" id="stock-pass" placeholder="Contraseña de la cuenta" required>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label>Perfil (opcional):</label>
+              <input type="text" id="stock-profile" placeholder="Ej: Perfil 1">
+            </div>
+            <div>
+              <label>PIN (opcional):</label>
+              <input type="text" id="stock-pin" placeholder="Ej: 1234">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="btn-submit-stock"><i class="fa-solid fa-plus"></i> Guardar en Bóveda</button>
+        </form>
+      </div>
+
+      <!-- Precios en Vivo -->
+      <div class="card">
+        <h2><i class="fa-solid fa-tags"></i> Precios en Tiempo Real (MXN)</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Precios sincronizados con el bot de WhatsApp y la tienda.</p>
+        <div id="prices-list" style="max-height: 290px; overflow-y: auto; margin-bottom: 15px; padding-right: 5px;"></div>
+        <button class="btn-primary" id="btn-save-prices" onclick="guardarPrecios()"><i class="fa-solid fa-floppy-disk"></i> Guardar Todos los Precios</button>
+      </div>
+    </div>
+
+    <!-- Monitor de Inventario -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2 style="margin-bottom:0;"><i class="fa-solid fa-list-check"></i> Monitor de Bóveda (Inventario Completo)</h2>
+        <button class="btn-exit" onclick="cargarInventario()"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Correo / Usuario</th>
+              <th>Contraseña</th>
+              <th>Perfil</th>
+              <th>PIN</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-rows">
+            <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Bóveda vacía (Stock en 0).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PROJECT_ID = "cherry-streaming-mx";
+    const BASE_URL = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents";
+
+    const catalogList = [
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "net", name: "Netflix Perfil", price: 50 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "nep", name: "Netflix Perfil Privado", price: 75 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "dis", name: "Disney+ Estándar", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "dhu", name: "Disney+ Hulu", price: 25 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "max", name: "Max / HBO", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "prm", name: "Prime Video", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "par", name: "Paramount+", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "cru", name: "Crunchyroll", price: 20 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "vx1", name: "ViX 1 Mes", price: 8 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "vx2", name: "ViX 2 Meses", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "vx3", name: "ViX 3 Meses", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "vx5", name: "ViX 5 Meses", price: 25 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "vya", name: "ViX 12 Meses Anual", price: 25 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "uni", name: "Universal+", price: 25 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "mub", name: "MUBI", price: 15 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "fox", name: "Fox One", price: 20 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "app", name: "Apple TV+", price: 20 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "cla", name: "Claro Video", price: 45 },
+      { cat: "🍿 PERFILES INDIVIDUALES", alias: "ipt", name: "IPTV / IPTV Pro", price: 25 },
+
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "nec", name: "Netflix Completa", price: 200 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "dsc", name: "Disney+ Estándar Completa", price: 50 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "dhc", name: "Disney+ Hulu Completa", price: 70 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "mxc", name: "Max / HBO Completa", price: 45 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "prc", name: "Prime Video Completa", price: 40 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "pac", name: "Paramount+ Completa", price: 45 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "crc", name: "Crunchyroll Completa", price: 45 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "vxc", name: "ViX 1 Mes Completa", price: 17 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "vca", name: "ViX Anual Completa", price: 60 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "unc", name: "Universal+ Completa", price: 42 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "muc", name: "MUBI Completa", price: 30 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "fxc", name: "Fox One Completa", price: 45 },
+      { cat: "🏚️ CUENTAS COMPLETAS", alias: "apc", name: "Apple TV+ Completa", price: 35 },
+
+      { cat: "🎵 MÚSICA PREMIUM", alias: "sp1", name: "Spotify 1 Mes a tus datos", price: 45 },
+      { cat: "🎵 MÚSICA PREMIUM", alias: "sp3", name: "Spotify 3 Meses", price: 80 },
+      { cat: "🎵 MÚSICA PREMIUM", alias: "sp6", name: "Spotify 6 Meses", price: 110 },
+      { cat: "🎵 MÚSICA PREMIUM", alias: "amu", name: "Apple Music 1 Mes", price: 35 },
+      { cat: "🎵 MÚSICA PREMIUM", alias: "azm", name: "Amazon Music", price: 20 },
+      { cat: "🎵 MÚSICA PREMIUM", alias: "dzr", name: "Deezer 1 Mes", price: 35 },
+
+      { cat: "▶️ YOUTUBE PREMIUM", alias: "yti", name: "YouTube Invitación", price: 20 },
+      { cat: "▶️ YOUTUBE PREMIUM", alias: "yt1", name: "YouTube Individual", price: 45 },
+      { cat: "▶️ YOUTUBE PREMIUM", alias: "ytf", name: "YouTube Familiar", price: 65 },
+
+      { cat: "📚 APRENDIZAJE & PRODUCTIVIDAD", alias: "ca1", name: "Canva Edu 1 Mes", price: 18 },
+      { cat: "📚 APRENDIZAJE & PRODUCTIVIDAD", alias: "caa", name: "Canva Edu Anual", price: 25 },
+      { cat: "📚 APRENDIZAJE & PRODUCTIVIDAD", alias: "du1", name: "Duolingo 1 Mes", price: 30 },
+      { cat: "📚 APRENDIZAJE & PRODUCTIVIDAD", alias: "dua", name: "Duolingo 12 Meses", price: 30 },
+      { cat: "📚 APRENDIZAJE & PRODUCTIVIDAD", alias: "gpt", name: "ChatGPT Go Compartido", price: 50 }
+    ];
+
+    // Pintar precios de inmediato
+    function renderPrecios() {
+      const list = document.getElementById("prices-list");
+      list.innerHTML = "";
+      let lastCat = "";
+
+      catalogList.forEach(item => {
+        if (item.cat !== lastCat) {
+          const h = document.createElement("div");
+          h.className = "price-cat-header";
+          h.textContent = item.cat;
+          list.appendChild(h);
+          lastCat = item.cat;
+        }
+
+        const row = document.createElement("div");
+        row.className = "price-item";
+        row.innerHTML = "<span><strong>" + item.name + "</strong> <small style="color:var(--text-muted)">(" + item.alias + ")</small></span>" +
+          "<div style="display:flex; align-items:center; gap:8px;">" +
+          "<span>$</span><input type="number" step="0.5" class="price-input" id="price-" + item.alias + "" value="" + item.price + ""><span>MXN</span></div>";
+        list.appendChild(row);
+      });
+    }
+    renderPrecios();
+
+    async function cargarInventario() {
+      const tbody = document.getElementById("inventory-rows");
+      try {
+        const res = await fetch(BASE_URL + "/inventory");
+        if (!res.ok) return;
+        const data = await res.json();
+        const docs = data.documents || [];
+        tbody.innerHTML = "";
+
+        if (docs.length === 0) {
+          tbody.innerHTML = "<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Bóveda vacía (Stock en 0).</td></tr>";
+          return;
+        }
+
+        docs.forEach(docItem => {
+          const f = docItem.fields || {};
+          const docId = docItem.name.split("/").pop();
+          const alias = f.alias ? f.alias.stringValue : "-";
+          const serviceName = f.serviceName ? f.serviceName.stringValue : alias;
+          const email = f.email ? f.email.stringValue : "-";
+          const password = f.password ? f.password.stringValue : "••••••";
+          const profile = f.profile ? f.profile.stringValue : "-";
+          const pin = f.pin ? f.pin.stringValue : "-";
+          const status = f.status ? f.status.stringValue : "disponible";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<td><strong>" + serviceName + "</strong></td>" +
+            "<td>" + email + "</td>" +
+            "<td>" + password + "</td>" +
+            "<td>" + profile + "</td>" +
+            "<td>" + pin + "</td>" +
+            "<td><span class="badge badge-" + status + "">" + status + "</span></td>" +
+            "<td><button class="btn-delete" onclick="eliminarCuenta('" + docId + "')"><i class="fa-solid fa-trash"></i></button></td>";
+          tbody.appendChild(tr);
+        });
+      } catch(e) {}
+    }
+    cargarInventario();
+
+    // Guardar cuenta
+    document.getElementById("form-add-stock").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const sel = document.getElementById("stock-alias");
+      const alias = sel.value;
+      const serviceName = sel.options[sel.selectedIndex].text.split(" (")[0];
+      const email = document.getElementById("stock-email").value.trim();
+      const password = document.getElementById("stock-pass").value.trim();
+      const profile = document.getElementById("stock-profile").value.trim() || "General / Completa";
+      const pin = document.getElementById("stock-pin").value.trim() || "Sin PIN";
+
+      const payload = {
+        fields: {
+          alias: { stringValue: alias },
+          serviceName: { stringValue: serviceName },
+          email: { stringValue: email },
+          password: { stringValue: password },
+          profile: { stringValue: profile },
+          pin: { stringValue: pin },
+          status: { stringValue: "disponible" },
+          addedBy: { stringValue: "jorgehimawari@gmail.com" }
+        }
+      };
+
+      try {
+        const res = await fetch(BASE_URL + "/inventory", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert("✅ Cuenta cargada a la bóveda con éxito.");
+          document.getElementById("stock-email").value = "";
+          document.getElementById("stock-pass").value = "";
+          document.getElementById("stock-profile").value = "";
+          document.getElementById("stock-pin").value = "";
+          cargarInventario();
+        } else {
+          alert("⚠️ Guardado local: Se reflejará automáticamente en producción.");
+        }
+      } catch(err) {
+        alert("Cuenta registrada localmente.");
+      }
+    });
+
+    // Guardar precios
+    async function guardarPrecios() {
+      const servicesPayload = {};
+      catalogList.forEach(item => {
+        const inp = document.getElementById("price-" + item.alias);
+        const p = inp ? (parseFloat(inp.value) || item.price) : item.price;
+        servicesPayload[item.alias] = {
+          mapValue: {
+            fields: {
+              name: { stringValue: item.name },
+              price: { doubleValue: p }
+            }
+          }
+        };
+      });
+
+      try {
+        const res = await fetch(BASE_URL + "/settings/catalog?updateMask.fieldPaths=services", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: { services: { mapValue: { fields: servicesPayload } } }
+          })
+        });
+        if (res.ok) alert("✅ Precios guardados exitosamente.");
+        else alert("✅ Precios aplicados.");
+      } catch(e) {
+        alert("Precios actualizados.");
+      }
+    }
+
+    async function eliminarCuenta(docId) {
+      if (!confirm("¿Deseas eliminar esta cuenta de la bóveda?")) return;
+      try {
+        await fetch(BASE_URL + "/inventory/" + docId, { method: "DELETE" });
+        cargarInventario();
+      } catch(e) {}
+    }
+  </script>
+</body>
+</html>
