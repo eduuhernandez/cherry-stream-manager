@@ -185,7 +185,381 @@
       <div class="card">
         <h2><i class="fa-solid fa-tags"></i> Precios en Tiempo Real (MXN)</h2>
         <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:12px;">Precios sincronizados con el bot de WhatsApp y la tienda.</p>
-        <div id="prices-list" style="max-height: 290px; overflow-y: auto; margin-bottom: 15px; padding-right: 5px;"></div>
+        <div id="prices-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; padding-right: 8px;">
+  <div class="price-cat-header">🍿 PERFILES INDIVIDUALES</div>
+  <div class="price-item">
+    <span><strong>Netflix Perfil</strong> <small style="color:var(--text-muted)">(net)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-net" data-alias="net" data-name="Netflix Perfil" value="50">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Netflix Perfil Privado</strong> <small style="color:var(--text-muted)">(nep)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-nep" data-alias="nep" data-name="Netflix Perfil Privado" value="75">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Disney+ Estándar</strong> <small style="color:var(--text-muted)">(dis)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dis" data-alias="dis" data-name="Disney+ Estándar" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Disney+ Hulu</strong> <small style="color:var(--text-muted)">(dhu)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dhu" data-alias="dhu" data-name="Disney+ Hulu" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Max / HBO</strong> <small style="color:var(--text-muted)">(max)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-max" data-alias="max" data-name="Max / HBO" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Prime Video</strong> <small style="color:var(--text-muted)">(prm)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-prm" data-alias="prm" data-name="Prime Video" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Paramount+</strong> <small style="color:var(--text-muted)">(par)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-par" data-alias="par" data-name="Paramount+" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Crunchyroll</strong> <small style="color:var(--text-muted)">(cru)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-cru" data-alias="cru" data-name="Crunchyroll" value="20">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 1 Mes</strong> <small style="color:var(--text-muted)">(vx1)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vx1" data-alias="vx1" data-name="ViX 1 Mes" value="8">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 2 Meses</strong> <small style="color:var(--text-muted)">(vx2)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vx2" data-alias="vx2" data-name="ViX 2 Meses" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 3 Meses</strong> <small style="color:var(--text-muted)">(vx3)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vx3" data-alias="vx3" data-name="ViX 3 Meses" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 5 Meses</strong> <small style="color:var(--text-muted)">(vx5)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vx5" data-alias="vx5" data-name="ViX 5 Meses" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 12 Meses Anual</strong> <small style="color:var(--text-muted)">(vya)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vya" data-alias="vya" data-name="ViX 12 Meses Anual" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Universal+</strong> <small style="color:var(--text-muted)">(uni)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-uni" data-alias="uni" data-name="Universal+" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>MUBI</strong> <small style="color:var(--text-muted)">(mub)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-mub" data-alias="mub" data-name="MUBI" value="15">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Fox One</strong> <small style="color:var(--text-muted)">(fox)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-fox" data-alias="fox" data-name="Fox One" value="20">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Apple TV+</strong> <small style="color:var(--text-muted)">(app)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-app" data-alias="app" data-name="Apple TV+" value="20">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Claro Video</strong> <small style="color:var(--text-muted)">(cla)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-cla" data-alias="cla" data-name="Claro Video" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>IPTV / IPTV Pro</strong> <small style="color:var(--text-muted)">(ipt)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-ipt" data-alias="ipt" data-name="IPTV / IPTV Pro" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-cat-header">🏚️ CUENTAS COMPLETAS</div>
+  <div class="price-item">
+    <span><strong>Netflix Completa</strong> <small style="color:var(--text-muted)">(nec)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-nec" data-alias="nec" data-name="Netflix Completa" value="200">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Disney+ Estándar Completa</strong> <small style="color:var(--text-muted)">(dsc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dsc" data-alias="dsc" data-name="Disney+ Estándar Completa" value="50">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Disney+ Hulu Completa</strong> <small style="color:var(--text-muted)">(dhc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dhc" data-alias="dhc" data-name="Disney+ Hulu Completa" value="70">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Max / HBO Completa</strong> <small style="color:var(--text-muted)">(mxc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-mxc" data-alias="mxc" data-name="Max / HBO Completa" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Prime Video Completa</strong> <small style="color:var(--text-muted)">(prc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-prc" data-alias="prc" data-name="Prime Video Completa" value="40">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Paramount+ Completa</strong> <small style="color:var(--text-muted)">(pac)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-pac" data-alias="pac" data-name="Paramount+ Completa" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Crunchyroll Completa</strong> <small style="color:var(--text-muted)">(crc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-crc" data-alias="crc" data-name="Crunchyroll Completa" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX 1 Mes Completa</strong> <small style="color:var(--text-muted)">(vxc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vxc" data-alias="vxc" data-name="ViX 1 Mes Completa" value="17">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ViX Anual Completa</strong> <small style="color:var(--text-muted)">(vca)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-vca" data-alias="vca" data-name="ViX Anual Completa" value="60">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Universal+ Completa</strong> <small style="color:var(--text-muted)">(unc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-unc" data-alias="unc" data-name="Universal+ Completa" value="42">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>MUBI Completa</strong> <small style="color:var(--text-muted)">(muc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-muc" data-alias="muc" data-name="MUBI Completa" value="30">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Fox One Completa</strong> <small style="color:var(--text-muted)">(fxc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-fxc" data-alias="fxc" data-name="Fox One Completa" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Apple TV+ Completa</strong> <small style="color:var(--text-muted)">(apc)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-apc" data-alias="apc" data-name="Apple TV+ Completa" value="35">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-cat-header">🎵 MÚSICA PREMIUM</div>
+  <div class="price-item">
+    <span><strong>Spotify 1 Mes a tus datos</strong> <small style="color:var(--text-muted)">(sp1)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-sp1" data-alias="sp1" data-name="Spotify 1 Mes a tus datos" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Spotify 3 Meses</strong> <small style="color:var(--text-muted)">(sp3)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-sp3" data-alias="sp3" data-name="Spotify 3 Meses" value="80">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Spotify 6 Meses</strong> <small style="color:var(--text-muted)">(sp6)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-sp6" data-alias="sp6" data-name="Spotify 6 Meses" value="110">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Apple Music 1 Mes</strong> <small style="color:var(--text-muted)">(amu)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-amu" data-alias="amu" data-name="Apple Music 1 Mes" value="35">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Amazon Music</strong> <small style="color:var(--text-muted)">(azm)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-azm" data-alias="azm" data-name="Amazon Music" value="20">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Deezer 1 Mes</strong> <small style="color:var(--text-muted)">(dzr)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dzr" data-alias="dzr" data-name="Deezer 1 Mes" value="35">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-cat-header">▶️ YOUTUBE PREMIUM</div>
+  <div class="price-item">
+    <span><strong>YouTube Invitación</strong> <small style="color:var(--text-muted)">(yti)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-yti" data-alias="yti" data-name="YouTube Invitación" value="20">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>YouTube Individual</strong> <small style="color:var(--text-muted)">(yt1)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-yt1" data-alias="yt1" data-name="YouTube Individual" value="45">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>YouTube Familiar</strong> <small style="color:var(--text-muted)">(ytf)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-ytf" data-alias="ytf" data-name="YouTube Familiar" value="65">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-cat-header">📚 APRENDIZAJE & PRODUCTIVIDAD</div>
+  <div class="price-item">
+    <span><strong>Canva Edu 1 Mes</strong> <small style="color:var(--text-muted)">(ca1)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-ca1" data-alias="ca1" data-name="Canva Edu 1 Mes" value="18">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Canva Edu Anual</strong> <small style="color:var(--text-muted)">(caa)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-caa" data-alias="caa" data-name="Canva Edu Anual" value="25">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Duolingo 1 Mes</strong> <small style="color:var(--text-muted)">(du1)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-du1" data-alias="du1" data-name="Duolingo 1 Mes" value="30">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>Duolingo 12 Meses</strong> <small style="color:var(--text-muted)">(dua)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-dua" data-alias="dua" data-name="Duolingo 12 Meses" value="30">
+      <span>MXN</span>
+    </div>
+  </div>
+  <div class="price-item">
+    <span><strong>ChatGPT Go Compartido</strong> <small style="color:var(--text-muted)">(gpt)</small></span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span>$</span>
+      <input type="number" step="0.5" class="price-input" id="price-gpt" data-alias="gpt" data-name="ChatGPT Go Compartido" value="50">
+      <span>MXN</span>
+    </div>
+  </div>
+</div>
         <button class="btn-primary" id="btn-save-prices" onclick="guardarPrecios()"><i class="fa-solid fa-floppy-disk"></i> Guardar Todos los Precios</button>
       </div>
     </div>
