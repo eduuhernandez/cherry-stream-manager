@@ -2485,9 +2485,14 @@ function sendCartWhatsApp() {
   <div id="myAccountsModal" class="cart-drawer-overlay">
     <div class="cart-drawer" style="max-width:540px; border-radius:24px; padding:24px; max-height:85vh; display:flex; flex-direction:column; background:#111827; color:#f8fafc; border:1px solid rgba(255,255,255,0.12);">
       <div class="drawer-header" style="margin-bottom:12px;">
-        <h3 class="drawer-title" style="display:flex; align-items:center; gap:8px;">
-          🍿 Mis Servicios y Credenciales
-        </h3>
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%; padding-right:12px;">
+          <h3 class="drawer-title" style="display:flex; align-items:center; gap:8px; margin:0; font-size:1.15rem;">
+            🍿 Mis Servicios y Credenciales
+          </h3>
+          <button type="button" onclick="clearAllCustomerAccounts()" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ef4444; font-size:0.75rem; font-weight:700; padding:4px 10px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:4px;">
+            🗑️ Limpiar todo
+          </button>
+        </div>
         <button type="button" class="drawer-close" onclick="closeMyAccountsModal()">✕</button>
       </div>
 
@@ -2598,6 +2603,54 @@ function sendCartWhatsApp() {
       if (modal) modal.style.display = "none";
     };
 
+    
+    window.removeSingleAccount = async function(docId) {
+      if (!confirm("¿Deseas quitar esta cuenta de tu lista de credenciales?")) return;
+      try {
+        const firestore = window.db || (typeof firebase !== "undefined" && firebase.apps?.length ? firebase.firestore() : null);
+        if (!firestore) return;
+        await firestore.collection('inventory').doc(docId).update({
+          hiddenFromCustomer: true
+        });
+        await loadCustomerAccounts();
+      } catch (err) {
+        alert("Error al eliminar cuenta: " + err.message);
+      }
+    };
+
+    window.clearAllCustomerAccounts = async function() {
+      if (!confirm("¿Deseas limpiar todas las cuentas de tu historial?\n\nYa no se mostrarán en esta lista.")) return;
+      try {
+        const firestore = window.db || (typeof firebase !== "undefined" && firebase.apps?.length ? firebase.firestore() : null);
+        if (!firestore) return;
+
+        const userCode = currentCustomer.customerCode || currentCustomer.id;
+        const cleanPhone = String(currentCustomer.phone || '').replace(/\D/g, '').slice(-10);
+
+        const [byUserSnap, byPhoneSnap] = await Promise.all([
+          firestore.collection('inventory').where('assignedUser', '==', userCode).get(),
+          firestore.collection('inventory').where('assignedTo', '==', cleanPhone).get()
+        ]);
+
+        const batch = firestore.batch();
+        byUserSnap.forEach(d => {
+          if (!d.data().hiddenFromCustomer) {
+            batch.update(d.ref, { hiddenFromCustomer: true });
+          }
+        });
+        byPhoneSnap.forEach(d => {
+          if (!d.data().hiddenFromCustomer) {
+            batch.update(d.ref, { hiddenFromCustomer: true });
+          }
+        });
+
+        await batch.commit();
+        await loadCustomerAccounts();
+      } catch (err) {
+        alert("Error al vaciar historial: " + err.message);
+      }
+    };
+
     window.copyToClipboard = function(btn, text) {
       navigator.clipboard.writeText(text).then(() => {
         const originalText = btn.innerText;
@@ -2649,6 +2702,7 @@ function sendCartWhatsApp() {
 
         let htmlCards = "";
         docsMap.forEach((acc, docId) => {
+          if (acc.hiddenFromCustomer) return;
           // Cálculo de garantía
           let warrantyText = "30 días de garantía";
           let warrantyClass = "warranty-active";
@@ -2673,8 +2727,13 @@ function sendCartWhatsApp() {
           htmlCards += `
             <div class="account-card-box">
               <div class="account-card-header">
-                <span style="font-weight:700; color:#e2e8f0; font-size:1rem; font-weight:800;">🍿 ${serviceTitle}</span>
-                <span class="warranty-badge ${warrantyClass}">${warrantyText}</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="color:#e2e8f0; font-size:1rem; font-weight:800;">🍿 ${serviceTitle}</span>
+                  <span class="warranty-badge ${warrantyClass}">${warrantyText}</span>
+                </div>
+                <button type="button" title="Eliminar de mi vista" onclick="removeSingleAccount('${docId}')" style="background:transparent; border:none; color:#94a3b8; font-size:0.95rem; cursor:pointer; padding:2px 6px; border-radius:6px; transition:all 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">
+                  🗑️
+                </button>
               </div>
 
               <div class="credential-row">
