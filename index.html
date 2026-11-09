@@ -1289,13 +1289,15 @@
 
   <div id="userAuthBar" class="user-auth-bar">
     <div id="authGuestView" style="display: flex; gap: 8px; align-items: center;">
-      <span style="color:#94a3b8; font-size:0.85rem;">¿Tienes saldo?</span>
+      <span style="color:#94a3b8; font-size:0.85rem;"></span>
       <button class="auth-btn-secondary" onclick="openAuthModal('login')">🔑 Iniciar Sesión</button>
       <button class="auth-btn-action" onclick="openAuthModal('register')">✨ Registrarse</button>
     </div>
     <div id="authUserView" style="display: none; gap: 12px; align-items: center;">
       <span id="authUsernameDisplay" style="font-weight:600;">👤 Usuario</span>
       <span class="user-balance-pill">💰 Saldo: $<span id="authBalanceDisplay">0.00</span> MXN</span>
+            <button type="button" id="btnRecargarHeaderRight" onclick="abrirRecargaCherry()" class="auth-btn-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 4px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; box-shadow: 0 2px 6px rgba(16,185,129,0.35); margin-left: 6px; margin-right: 6px;">⚡ Recargar</button>
+            
       <button class="auth-btn-action" style="padding:4px 10px; font-size:0.82rem; display:flex; align-items:center; gap:4px;" onclick="openMyAccountsModal()">🍿 Mis Cuentas</button>
       <button class="auth-btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="logoutCustomer()">🚪 Salir</button>
     </div>
@@ -2780,5 +2782,6 @@ function sendCartWhatsApp() {
     }
   </script>
 
+<script src="recarga_ia.js"></script>
 </body>
 </html>
