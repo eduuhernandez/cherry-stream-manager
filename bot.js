@@ -95,7 +95,7 @@ async function startBot() {
     const from = msg.key.remoteJid;
     // Grupos habilitados
 
-    const body = (msg.message.conversation || msg.message.extendedTextMessage?.text || '').trim();
+    const body = (msg.message?.conversation || msg.message?.extendedTextMessage?.text || msg.message?.imageMessage?.caption || msg.message?.videoMessage?.caption || '').trim();
     if (!body) return;
 
     console.log(`📩 Mensaje recibido de ${from}: "${body}"`);
@@ -1003,6 +1003,152 @@ async function startBot() {
     // ==========================================
     // COMANDO -CORTE (RESUMEN DIARIO DE CAJA)
     // ==========================================
+    // ==========================================
+    // COMANDO -REPORTAR (TICKET CON EVIDENCIA A ENCARGADAS)
+    // ==========================================
+    if (body.toLowerCase().startsWith('-reportar')) {
+      const parts = body.trim().split(/\s+/);
+      const alias = (parts[1] || '').toLowerCase().trim();
+      const customerNote = parts.slice(2).join(' ') || 'Sin observaciones adicionales';
+
+      if (!alias) {
+        await sendSafeMessage(
+          "🛡️ *SISTEMA DE SOPORTE Y GARANTÍAS* 🛡️\n\n" +
+          "Para reportar una falla, envía un mensaje o foto con:\n" +
+          "`-reportar <alias> [motivo de la falla]`\n\n" +
+          "💡 *Ejemplo:*\n" +
+          "`-reportar prm contraseña incorrecta`\n\n" +
+          "📸 _Si envías foto, pon ese texto en el pie de foto como evidencia._"
+        );
+        return;
+      }
+
+      try {
+        const cleanSenderPhone = cleanTo10Digits(senderPhone);
+
+        // 1. Buscar cuentas entregadas al cliente bajo ese alias (filtro en memoria sin requerir índice compuesto)
+        const userOrdersSnap = await db.collection('inventory')
+          .where('alias', '==', alias)
+          .where('assignedTo', '==', cleanSenderPhone)
+          .get();
+
+        let oldAccount = null;
+        let deliveredDate = null;
+        let diffDays = 0;
+        let tieneGarantia = false;
+        let statusGarantia = "⚠️ Sin registro de compra previa con este número";
+
+        if (!userOrdersSnap.empty) {
+          const docs = [];
+          userOrdersSnap.forEach(d => docs.push(d.data()));
+          // Ordenar por fecha de entrega más reciente
+          docs.sort((a, b) => {
+            const timeA = a.deliveredAt?.toDate ? a.deliveredAt.toDate().getTime() : 0;
+            const timeB = b.deliveredAt?.toDate ? b.deliveredAt.toDate().getTime() : 0;
+            return timeB - timeA;
+          });
+
+          oldAccount = docs[0];
+          if (oldAccount.deliveredAt && oldAccount.deliveredAt.toDate) {
+            deliveredDate = oldAccount.deliveredAt.toDate();
+            diffDays = Math.floor((new Date() - deliveredDate) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 30) {
+              tieneGarantia = true;
+              statusGarantia = "🟢 APLICA GARANTÍA (" + (30 - diffDays) + " días restantes)";
+            } else {
+              tieneGarantia = false;
+              statusGarantia = "🔴 FUERA DE GARANTÍA (" + diffDays + " días transcurridos)";
+            }
+          } else {
+            tieneGarantia = true;
+            statusGarantia = "🟢 GARANTÍA ACTIVA";
+          }
+        }
+
+        const ticketId = 'TCK-' + Date.now().toString().slice(-6);
+        const reportTime = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+
+        // 2. Extraer buffer de imagen si viene adjunta
+        let mediaBuffer = null;
+        let isImage = false;
+        if (msg.message?.imageMessage) {
+          isImage = true;
+          try {
+            const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+            mediaBuffer = await downloadMediaMessage(msg, 'buffer', {});
+          } catch (eMedia) {
+            console.warn("Aviso procesando imagen:", eMedia.message);
+          }
+        }
+
+        // 3. Registrar ticket en Firestore
+        await db.collection('support_tickets').doc(ticketId).set({
+          ticketId: ticketId,
+          customerPhone: cleanSenderPhone,
+          alias: alias,
+          serviceName: alias.toUpperCase(),
+          deliveredAccount: oldAccount ? (oldAccount.email || 'N/A') : 'No localizada',
+          diffDays: diffDays,
+          hasWarranty: tieneGarantia,
+          customerNote: customerNote,
+          status: 'pendiente_revision',
+          hasEvidenceImage: !!mediaBuffer,
+          createdAt: FieldValue.serverTimestamp()
+        });
+
+        // 4. Preparar alerta para ambas encargadas
+        const staffPhones = ['5215566132733@s.whatsapp.net', '5212223255157@s.whatsapp.net'];
+
+        let alertStaff = "🚨 *NUEVO REPORTE DE FALLA | " + ticketId + "* 🚨\n";
+        alertStaff += "━━━━━━━━━━━━━━━━━━━━\n";
+        alertStaff += "👤 *Cliente:* +" + cleanSenderPhone + "\n";
+        alertStaff += "🍿 *Servicio:* " + alias.toUpperCase() + "\n";
+        alertStaff += "🛡️ *Estado de Garantía:* " + statusGarantia + "\n";
+        alertStaff += "📅 *Fecha:* " + reportTime + "\n";
+        alertStaff += "━━━━━━━━━━━━━━━━━━━━\n";
+        if (oldAccount) {
+          alertStaff += "📧 *Cuenta entregada:* " + (oldAccount.email || 'N/A') + "\n";
+          alertStaff += "🔑 *Clave:* " + (oldAccount.password || 'N/A') + "\n";
+          if (oldAccount.profile) alertStaff += "🏷️ *Perfil:* " + oldAccount.profile + "\n";
+          if (oldAccount.pin) alertStaff += "🔢 *PIN:* " + oldAccount.pin + "\n";
+        }
+        alertStaff += "📝 *Motivo reportado:* " + customerNote + "\n";
+        alertStaff += "📸 *Evidencia adjunta:* " + (mediaBuffer ? "Sí (ver foto adjunta)" : "No enviada") + "\n";
+        alertStaff += "━━━━━━━━━━━━━━━━━━━━\n";
+        alertStaff += "⚡ _Para reponer escribe: -entregar " + alias + " " + cleanSenderPhone + "_";
+
+        for (const staffJid of staffPhones) {
+          try {
+            if (mediaBuffer) {
+              await sock.sendMessage(staffJid, { image: mediaBuffer, caption: alertStaff });
+            } else {
+              await sock.sendMessage(staffJid, { text: alertStaff });
+            }
+          } catch (staffErr) {
+            console.error("Error enviando alerta a encargada:", staffErr.message);
+          }
+        }
+
+        // 5. Confirmación para el cliente
+        let clientReply = "✅ *REPORTE REGISTRADO CON ÉXITO* ✅\n";
+        clientReply += "━━━━━━━━━━━━━━━━━━━━\n";
+        clientReply += "🎫 *Número de Ticket:* " + ticketId + "\n";
+        clientReply += "🍿 *Servicio:* " + alias.toUpperCase() + "\n";
+        clientReply += "🛡️ *Garantía:* " + statusGarantia + "\n";
+        clientReply += "📸 *Evidencia:* " + (mediaBuffer ? "Recibida correctamente" : "Sin imagen") + "\n";
+        clientReply += "━━━━━━━━━━━━━━━━━━━━\n";
+        clientReply += "👩‍💼 Las encargadas de soporte han recibido tu caso y te darán seguimiento a la brevedad.";
+
+        await sendSafeMessage(clientReply);
+        console.log("✅ [TICKET GENERADO] " + ticketId + " enviado a encargadas.");
+
+      } catch (err) {
+        console.error("Error en -reportar:", err);
+        await sendSafeMessage("⚠️ Error al registrar reporte: " + err.message);
+      }
+      return;
+    }
+
     if (body.toLowerCase() === '-corte') {
       if (!isAdmin) {
         await sendSafeMessage('⛔ Comando exclusivo del operador.');
