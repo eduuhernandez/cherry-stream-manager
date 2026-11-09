@@ -533,7 +533,7 @@
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  const db = firebase.firestore();
+  window.db = firebase.firestore(); const db = window.db;
 
   let pendingOrderItems = [];
   let pendingOrderTotal = 0;
@@ -611,10 +611,10 @@
 
     try {
       // 1. Guardar orden en colección 'orders' para el bot
-      await db.collection("orders").doc(orderId).set(orderPayload);
+      await window.db.collection("orders").doc(orderId).set(orderPayload);
 
       // 2. Registrar o actualizar cliente en 'customers'
-      await db.collection("customers").doc(cleanPhone).set({
+      await window.db.collection("customers").doc(cleanPhone).set({
         name: name,
         phone: cleanPhone,
         lastOrderAt: ahora,
@@ -927,46 +927,145 @@
     'p9': ['vix', 'vix (1 mes)']
   };
 
+  
+  // Mapeo de IDs de productos en index.html con los alias de la bóveda
+  window.PRODUCT_TO_ALIAS = {
+    'p1': 'net',
+    'p2': 'nep',
+    'p3': 'dis',
+    'p4': 'dhu',
+    'p5': 'max',
+    'p6': 'prm',
+    'p7': 'par',
+    'p8': 'cru',
+    'p9': 'app',
+    'p10': 'uni',
+    'p11': 'fox',
+    'p12': 'vx1',
+    'p13': 'vx2',
+    'p14': 'vx3',
+    'p15': 'vx5',
+    'p16': 'vya',
+    'p17': 'sp1',
+    'p18': 'sp3',
+    'p19': 'sp6',
+    'p20': 'yt1',
+    'p21': 'yti',
+    'p22': 'ytf',
+    'p23': 'ca1',
+    'p24': 'caa',
+    'p25': 'ipt',
+    'p26': 'cla',
+    'p27': 'mub',
+    'p28': 'amu',
+    'p29': 'dzr',
+    'p30': 'azm',
+    'p31': 'gpt',
+    'p32': 'du1',
+    'p33': 'dua',
+    'p34': 'nec',
+    'p35': 'dsc',
+    'p36': 'dhc',
+    'p37': 'prc',
+    'p38': 'mxc',
+    'p39': 'pac',
+    'p40': 'crc',
+    'p41': 'apc',
+    'p42': 'unc',
+    'p43': 'fxc',
+    'p44': 'muc',
+    'p45': 'vxc',
+    'p46': 'vca'
+  };
+
   async function fetchStoreInventory() {
     try {
-      const res = await fetch("https://firestore.googleapis.com/v1/projects/cherry-streaming-mx/databases/(default)/documents/inventory");
-      if (!res.ok) return;
-      const data = await res.json();
-      const docs = data.documents || [];
-
       window.STOCK_MAP = {};
 
-      docs.forEach(doc => {
-        const f = doc.fields || {};
-        const service = (f.service?.stringValue || f.servicio?.stringValue || "").toLowerCase().trim();
-        const status = (f.status?.stringValue || f.estado?.stringValue || "available").toLowerCase();
+      // Si Firebase SDK ya está inicializado en la ventana, usar snapshot nativo
+      if (window.db) {
+        const snap = await window.db.collection('inventory').where('status', '==', 'disponible').get();
+        snap.forEach(doc => {
+          const d = doc.data();
+          const al = (d.alias || d.service || '').toLowerCase().trim();
+          if (al) {
+            window.STOCK_MAP[al] = (window.STOCK_MAP[al] || 0) + 1;
+          }
+        });
+      } else {
+        // Fallback API REST
+        const res = await fetch("https://firestore.googleapis.com/v1/projects/cherry-streaming-mx/databases/(default)/documents/inventory");
+        if (!res.ok) return;
+        const data = await res.json();
+        const docs = data.documents || [];
 
-        if (status === "available" || status === "disponible") {
-          window.STOCK_MAP[service] = (window.STOCK_MAP[service] || 0) + 1;
-        }
-      });
+        docs.forEach(doc => {
+          const f = doc.fields || {};
+          const al = (f.alias?.stringValue || f.service?.stringValue || f.servicio?.stringValue || "").toLowerCase().trim();
+          const st = (f.status?.stringValue || f.estado?.stringValue || "").toLowerCase().trim();
+
+          if (st === "disponible" || st === "available") {
+            if (al) {
+              window.STOCK_MAP[al] = (window.STOCK_MAP[al] || 0) + 1;
+            }
+          }
+        });
+      }
 
       if (typeof renderStore === "function") {
         renderStore();
       }
-    } catch (e) {
-      console.warn("No se pudo conectar al inventario de Firestore:", e);
+    } catch (err) {
+      console.warn("Aviso fetchStoreInventory:", err);
     }
   }
 
-  function getProductStock(p) {
-    const keys = ALIAS_MAP[p.id] || [p.name.toLowerCase().trim()];
-    let total = 0;
-    keys.forEach(k => {
-      if (window.STOCK_MAP[k]) total += window.STOCK_MAP[k];
-    });
-    return total;
+  // Sobrescribir getProductStock para enlazar ID o Alias directamente
+  window.getProductStock = function(p) {
+    if (!p) return 0;
+    const aliasByPId = window.PRODUCT_TO_ALIAS[p.id] || '';
+    const pId = (p.id || '').toLowerCase();
+    const pName = (p.name || '').toLowerCase();
+
+    // 1. Por mapeo directo de ID (ej: p6 -> prm)
+    if (aliasByPId && window.STOCK_MAP[aliasByPId]) {
+      return window.STOCK_MAP[aliasByPId];
+    }
+
+    // 2. Por coincidencia en STOCK_MAP directa
+    if (window.STOCK_MAP[pId]) return window.STOCK_MAP[pId];
+
+    // 3. Por palabras clave en el nombre
+    for (const [key, qty] of Object.entries(window.STOCK_MAP)) {
+      if (pName.includes(key)) return qty;
+    }
+
+    return 0;
+  };
+
+  // Listener en tiempo real permanente
+  function initLiveStockSync() {
+    if (window.db) {
+      window.db.collection('inventory').where('status', '==', 'disponible')
+        .onSnapshot(snap => {
+          const map = {};
+          snap.forEach(d => {
+            const al = (d.data().alias || '').toLowerCase().trim();
+            if (al) map[al] = (map[al] || 0) + 1;
+          });
+          window.STOCK_MAP = map;
+          if (typeof renderStore === "function") renderStore();
+        }, () => {});
+    } else {
+      setTimeout(initLiveStockSync, 500);
+    }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     fetchStoreInventory();
-    setInterval(fetchStoreInventory, 15000);
+    initLiveStockSync();
   });
+
 </script>
 
 
@@ -1093,6 +1192,95 @@
     font-size: 0.75rem;
     color: #64748b;
     margin-top: 4px;
+  }
+</style>
+
+
+  <!-- FIREBASE GLOBAL INIT -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyDpL93xKbUc1ez7dR1ko_mgjCTcOzMtOsw",
+    authDomain: "cherry-streaming-mx.firebaseapp.com",
+    projectId: "cherry-streaming-mx",
+    storageBucket: "cherry-streaming-mx.firebasestorage.app",
+    messagingSenderId: "836275445121",
+    appId: "1:836275445121:web:52715ded272c2d7a911c80"
+  };
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    window.db = firebase.firestore();
+    var db = window.db;
+  </script>
+
+
+<style id="cherry-checkout-styles">
+  .btn-pay-balance {
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.2s;
+  }
+  .btn-pay-balance:hover {
+    background: #15803d;
+  }
+  .btn-pay-disabled {
+    background: #334155;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+  .delivery-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+  }
+  .delivery-card {
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f8fafc;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+  }
+  .delivery-credential-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 14px 0;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+  .credential-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .credential-line:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
   }
 </style>
 
@@ -1617,6 +1805,16 @@ function sendCartWhatsApp() {
 
 
 <script id="cherry-auth-script">
+
+  function getDbInstance() {
+    if (window.db) return window.db;
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      window.db = firebase.firestore();
+      return window.db;
+    }
+    return null;
+  }
+
   let currentCustomer = null;
   let customerUnsub = null;
 
@@ -1672,7 +1870,7 @@ function sendCartWhatsApp() {
     msg.innerText = '⏳ Verificando disponibilidad...';
 
     try {
-      const docRef = db.collection('customers').doc(code);
+      const docRef = window.db.collection('customers').doc(code);
       const docSnap = await docRef.get();
 
       if (docSnap.exists) {
@@ -1681,7 +1879,7 @@ function sendCartWhatsApp() {
         return;
       }
 
-      const phoneQuery = await db.collection('customers').where('phone', '==', cleanPhone).limit(1).get();
+      const phoneQuery = await window.db.collection('customers').where('phone', '==', cleanPhone).limit(1).get();
       if (!phoneQuery.empty) {
         msg.style.color = '#ef4444';
         msg.innerText = '❌ Este número ya tiene una cuenta. Inicia sesión con él.';
@@ -1726,7 +1924,7 @@ function sendCartWhatsApp() {
       let custData = null;
 
       // 1. Intentar por código directo (ID de documento)
-      const docRef = db.collection('customers').doc(input);
+      const docRef = window.db.collection('customers').doc(input);
       const docSnap = await docRef.get();
 
       if (docSnap.exists) {
@@ -1734,7 +1932,7 @@ function sendCartWhatsApp() {
       } else {
         // 2. Intentar buscar por teléfono
         const clean = input.replace(/\D/g, '');
-        const qSnap = await db.collection('customers').where('phone', '==', clean).limit(1).get();
+        const qSnap = await window.db.collection('customers').where('phone', '==', clean).limit(1).get();
         if (!qSnap.empty) {
           custData = { id: qSnap.docs[0].id, ...qSnap.docs[0].data() };
         }
@@ -1766,7 +1964,7 @@ function sendCartWhatsApp() {
 
   function listenCustomerBalance(code) {
     if (customerUnsub) customerUnsub();
-    customerUnsub = db.collection('customers').doc(code).onSnapshot(doc => {
+    customerUnsub = window.db.collection('customers').doc(code).onSnapshot(doc => {
       if (doc.exists) {
         const d = doc.data();
         currentCustomer = { id: doc.id, ...d };
@@ -1805,7 +2003,7 @@ function sendCartWhatsApp() {
     const savedCode = localStorage.getItem('cherry_user_code');
     if (savedCode && typeof db !== 'undefined') {
       try {
-        const docSnap = await db.collection('customers').doc(savedCode).get();
+        const docSnap = await window.db.collection('customers').doc(savedCode).get();
         if (docSnap.exists) {
           setCustomerSession({ id: docSnap.id, ...docSnap.data() });
         }
@@ -1814,6 +2012,382 @@ function sendCartWhatsApp() {
       }
     }
   });
+</script>
+
+
+  <!-- MODAL DE ENTREGA INMEDIATA -->
+  <div id="deliveryModalOverlay" class="delivery-modal-overlay">
+    <div class="delivery-card">
+      <div style="text-align:center; margin-bottom:14px;">
+        <div style="font-size:3rem; margin-bottom:6px;">🎉</div>
+        <h3 style="margin:0; font-size:1.4rem; color:#4ade80;">¡Compra Exitosa!</h3>
+        <p style="color:#94a3b8; font-size:0.85rem; margin:6px 0 0 0;">Tu servicio ha sido activado con tu saldo disponible.</p>
+      </div>
+
+      <div id="deliveryDetailsContainer"></div>
+
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button id="btnCopyCreds" class="auth-btn-secondary" style="flex:1; padding:10px;" onclick="copyDeliveryData()">📋 Copiar Accesos</button>
+        <button class="auth-btn-action" style="flex:1; padding:10px;" onclick="closeDeliveryModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+<script id="cherry-checkout-script">
+  let lastDeliveredData = "";
+
+  async function executeBalanceCheckout() {
+    if (!currentCustomer) {
+      openAuthModal('login');
+      return;
+    }
+
+    if (!cart || cart.length === 0) {
+      alert("El carrito está vacío.");
+      return;
+    }
+
+    const total = cart.reduce((acc, p) => acc + Number(p.price || 0), 0);
+    const userBal = Number(currentCustomer.balance || 0);
+
+    if (userBal < total) {
+      alert("Saldo insuficiente para completar la compra.");
+      return;
+    }
+
+    const confirmBuy = confirm("¿Deseas pagar $" + total + " MXN con tu saldo disponible?");
+    if (!confirmBuy) return;
+
+    const btn = document.querySelector('#payWithBalanceContainer button');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "⏳ Procesando compra con tu saldo...";
+    }
+
+    try {
+      const custRef = window.db.collection('customers').doc(currentCustomer.customerCode || currentCustomer.id);
+      
+      // 1. Obtener saldo fresco del servidor
+      const freshSnap = await custRef.get();
+      const actualBalance = Number(freshSnap.data()?.balance || 0);
+
+      if (actualBalance < total) {
+        alert("Tu saldo ha cambiado. Fondos insuficientes.");
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      const newBalance = actualBalance - total;
+      const deliveredItems = [];
+
+      // 2. Procesar cada producto del carrito
+      for (const item of cart) {
+        const isInv = typeof isInvitationProduct === 'function' && isInvitationProduct(item);
+
+        if (isInv) {
+          // Registro de orden para servicio por invitación
+          const orderDoc = await window.db.collection('orders').add({
+            serviceName: item.name,
+            servicePlan: item.plan || '',
+            price: Number(item.price || 0),
+            phone: currentCustomer.phone || '',
+            customerCode: currentCustomer.customerCode || currentCustomer.id,
+            email: currentCustomer.email || '',
+            status: 'pagado_con_saldo',
+            type: 'invitacion',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            channel: 'web_store'
+          });
+
+          deliveredItems.push({
+            name: item.name,
+            type: 'invitacion',
+            folio: orderDoc.id.slice(0, 7).toUpperCase(),
+            email: currentCustomer.email
+          });
+        } else {
+          // Buscar stock disponible en inventario
+          const invQuery = await window.db.collection('inventory')
+            .where('alias', '==', item.alias || item.id)
+            .where('status', '==', 'disponible')
+            .limit(1)
+            .get();
+
+          let accountData = null;
+
+          if (!invQuery.empty) {
+            const accDoc = invQuery.docs[0];
+            accountData = accDoc.data();
+
+            await accDoc.ref.update({
+              status: 'ocupada',
+              assignedTo: currentCustomer.phone || '',
+              assignedUser: currentCustomer.customerCode || currentCustomer.id,
+              deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }
+
+          const orderDoc = await window.db.collection('orders').add({
+            serviceAlias: item.alias || item.id,
+            serviceName: item.name,
+            servicePlan: item.plan || '',
+            price: Number(item.price || 0),
+            phone: currentCustomer.phone || '',
+            customerCode: currentCustomer.customerCode || currentCustomer.id,
+            status: 'pagado_con_saldo',
+            type: 'stock',
+            accountEmail: accountData ? accountData.email : null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            channel: 'web_store'
+          });
+
+          deliveredItems.push({
+            name: item.name,
+            type: 'stock',
+            folio: orderDoc.id.slice(0, 7).toUpperCase(),
+            account: accountData
+          });
+        }
+      }
+
+      // 3. Descontar saldo final en customers
+      await custRef.update({
+        balance: newBalance,
+        lastPurchase: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 4. Limpiar carrito y cerrar modal del carrito
+      cart = [];
+      if (typeof updateCartCount === 'function') updateCartCount();
+      if (typeof renderCart === 'function') renderCart();
+      const cartModal = document.getElementById('cartModal');
+      if (cartModal) cartModal.style.display = 'none';
+
+      // 5. Mostrar modal de entrega
+      showDeliverySuccess(deliveredItems, newBalance);
+
+    } catch (err) {
+      console.error("Error en checkout:", err);
+      alert("Ocurrió un error al procesar la compra: " + err.message);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "💳 Pagar con Saldo";
+      }
+    }
+  }
+
+  function showDeliverySuccess(items, remainingBalance) {
+    const container = document.getElementById('deliveryDetailsContainer');
+    let copyText = "🍒 *CHERRY STREAMING - COMPROBANTE DE COMPRA* 🍒\n\n";
+
+    let htmlMarkup = '<div style="max-height:300px; overflow-y:auto;">';
+
+    items.forEach((it, idx) => {
+      copyText += "📦 *Servicio:* " + it.name + "\n" + "🔖 *Folio:* #" + it.folio + "\n";
+
+      if (it.type === 'invitacion') {
+        copyText += "✉️ *Modo:* Invitación directa por correo\n" + "📧 *Enviado a:* " + it.email + "\n\n";
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#38bdf8; margin-bottom:6px;">📌 ${it.name} (Folio #${it.folio})</div>
+            <div style="font-size:0.85rem; color:#94a3b8;">Activación por Invitación:</div>
+            <div style="color:#f8fafc; font-weight:600; margin-top:2px;">Correo registrado: ${it.email}</div>
+            <div style="color:#a7f3d0; font-size:0.75rem; margin-top:4px;">⏳ Tu acceso llegará a tu bandeja en breves minutos.</div>
+          </div>
+        `;
+      } else if (it.account) {
+        const acc = it.account;
+        copyText += "📧 *Correo:* " + (acc.email || 'N/A') + "\n" +
+                    "🔑 *Contraseña:* " + (acc.password || 'N/A') + "\n" +
+                    (acc.profile ? "👤 *Perfil:* " + acc.profile + "\n" : "") +
+                    (acc.pin ? "🔒 *PIN:* " + acc.pin + "\n" : "") +
+                    (acc.expiration ? "⏳ *Vence:* " + acc.expiration + "\n" : "") + "\n";
+
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#4ade80; margin-bottom:6px;">✅ ${it.name} (Folio #${it.folio})</div>
+            <div class="credential-line"><span style="color:#94a3b8;">Correo:</span> <span>${acc.email || 'N/A'}</span></div>
+            <div class="credential-line"><span style="color:#94a3b8;">Contraseña:</span> <span>${acc.password || 'N/A'}</span></div>
+            ${acc.profile ? '<div class="credential-line"><span style="color:#94a3b8;">Perfil:</span> <span>' + acc.profile + '</span></div>' : ''}
+            ${acc.pin ? '<div class="credential-line"><span style="color:#94a3b8;">PIN:</span> <span>' + acc.pin + '</span></div>' : ''}
+            ${acc.expiration ? '<div class="credential-line"><span style="color:#94a3b8;">Vence:</span> <span>' + acc.expiration + '</span></div>' : ''}
+          </div>
+        `;
+      } else {
+        copyText += "⏳ *Estado:* En asignación por operador\n\n";
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#fbbf24; margin-bottom:6px;">⏳ ${it.name} (Folio #${it.folio})</div>
+            <div style="font-size:0.8rem; color:#94a3b8;">El operador está despachando tu cuenta. Te notificaremos a tu WhatsApp.</div>
+          </div>
+        `;
+      }
+    });
+
+    copyText += "💵 *Saldo restante:* $" + Number(remainingBalance).toFixed(2) + " MXN";
+    htmlMarkup += '</div>';
+
+    container.innerHTML = htmlMarkup;
+    lastDeliveredData = copyText;
+
+    document.getElementById('deliveryModalOverlay').style.display = 'flex';
+  }
+
+  function copyDeliveryData() {
+    if (!lastDeliveredData) return;
+    navigator.clipboard.writeText(lastDeliveredData).then(() => {
+      const btn = document.getElementById('btnCopyCreds');
+      btn.innerText = "✅ ¡Copiado!";
+      setTimeout(() => { btn.innerText = "📋 Copiar Accesos"; }, 2000);
+    });
+  }
+
+  function closeDeliveryModal() {
+    document.getElementById('deliveryModalOverlay').style.display = 'none';
+  }
+</script>
+
+
+<script id="cherry-stock-sync-v2">
+  // Mapa de alias oficiales bot <-> web
+  window.PRODUCT_ALIAS_LOOKUP = {
+    "app": ["apple", "app"],
+    "uni": ["universal", "uni"],
+    "vx1": ["vix1", "vx1"],
+    "cru": ["crunchyroll", "cru"],
+    "vca": ["vixanual", "vca"],
+    "ca1": ["canva1", "ca1"],
+    "sp6": ["spotify6", "sp6"],
+    "vx3": ["vix3", "vx3"],
+    "dhu": ["disneyhulu", "dhu"],
+    "yti": ["youtubeinv", "yti"],
+    "max": ["max", "hbo"],
+    "nep": ["netflixpriv", "nep"],
+    "caa": ["canvaanual", "caa"],
+    "vxc": ["vixcomp", "vxc"],
+    "apc": ["applecomp", "apc"],
+    "fox": ["fox", "foxone"],
+    "sp1": ["spotify1", "sp1"],
+    "par": ["paramount", "par"],
+    "dis": ["disney", "dis"],
+    "ytf": ["youtubefam", "ytf"],
+    "dhc": ["disneyhulucomp", "dhc"],
+    "muc": ["mubicomp", "muc"],
+    "crc": ["crunchycomp", "crc"],
+    "vx5": ["vix5", "vx5"],
+    "fxc": ["foxcomp", "fxc"],
+    "pac": ["paramountcomp", "pac"],
+    "prm": ["prime", "prm", "amazon"],
+    "net": ["netflix", "net"],
+    "vx2": ["vix2", "vx2"],
+    "prc": ["primecomp", "prc"],
+    "ipt": ["iptv", "ipt"],
+    "vya": ["vix12", "vya"],
+    "nec": ["netflixcomp", "nec"],
+    "gpt": ["chatgpt", "gpt"],
+    "dsc": ["disneycomp", "dsc"],
+    "du1": ["duo1", "du1"],
+    "cla": ["claro", "cla"],
+    "dua": ["duoanual", "dua"],
+    "yt1": ["youtube1", "yt1"],
+    "mub": ["mubi", "mub"],
+    "sp3": ["spotify3", "sp3"],
+    "amu": ["applemusic", "amu"],
+    "dzr": ["deezer", "dzr"],
+    "azm": ["amazonmusic", "azm"],
+    "unc": ["universalcomp", "unc"],
+    "mxc": ["maxcomp", "mxc"]
+  };
+
+  window.STOCK_MAP = {};
+
+  function updateStockBadgesOnUI() {
+    // 1. Si existe getProductStock, sincronizar el valor
+    if (typeof window.getProductStock === "function") {
+      window.originalGetProductStock = function(p) {
+        let count = 0;
+        const pId = (p.id || "").toLowerCase();
+        const pName = (p.name || "").toLowerCase();
+
+        for (const [alias, matchKeys] of Object.entries(window.PRODUCT_ALIAS_LOOKUP)) {
+          if (matchKeys.some(k => pId.includes(k) || pName.includes(k))) {
+            count += (window.STOCK_MAP[alias] || 0);
+          }
+        }
+        return count;
+      };
+    }
+
+    // 2. Actualizar directamente el DOM de las tarjetas visibles
+    document.querySelectorAll(".card, .product-card, div[class*='product']").forEach(card => {
+      const text = card.innerText.toLowerCase();
+      let matchedAlias = null;
+
+      for (const [alias, matchKeys] of Object.entries(window.PRODUCT_ALIAS_LOOKUP)) {
+        if (matchKeys.some(k => text.includes(k))) {
+          matchedAlias = alias;
+          break;
+        }
+      }
+
+      if (matchedAlias) {
+        const qty = window.STOCK_MAP[matchedAlias] || 0;
+        // Buscar el contenedor de stock dentro de la tarjeta
+        const allSpans = card.querySelectorAll("span, p, div");
+        allSpans.forEach(el => {
+          if (el.textContent.includes("disponibles") || el.textContent.includes("Agotado")) {
+            if (qty > 0) {
+              el.innerHTML = '<span style="color:#22c55e; font-weight:700;">🟢 ' + qty + ' disponibles</span>';
+            } else {
+              el.innerHTML = '<span style="color:#ef4444; font-weight:600;">🔴 0 disponibles (Agotado)</span>';
+            }
+          }
+        });
+      }
+    });
+  }
+
+  function connectRealtimeInventory() {
+    const firestore = window.db || (typeof firebase !== "undefined" && firebase.apps?.length ? firebase.firestore() : null);
+    if (!firestore) {
+      setTimeout(connectRealtimeInventory, 300);
+      return;
+    }
+
+    firestore.collection("inventory")
+      .where("status", "==", "disponible")
+      .onSnapshot(snapshot => {
+        const counts = {};
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const al = (d.alias || d.serviceAlias || "").toLowerCase().trim();
+          if (al) {
+            counts[al] = (counts[al] || 0) + 1;
+          }
+        });
+
+        window.STOCK_MAP = counts;
+        updateStockBadgesOnUI();
+
+        // Si la tienda usa renderProducts, disparar re-render
+        if (typeof renderProducts === "function") {
+          renderProducts();
+        }
+      }, err => {
+        console.warn("Aviso en listener de stock:", err.message);
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    connectRealtimeInventory();
+    setInterval(updateStockBadgesOnUI, 2000);
+  });
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    connectRealtimeInventory();
+    setInterval(updateStockBadgesOnUI, 2000);
+  }
 </script>
 
 </body>
