@@ -1424,3 +1424,94 @@ db.collection('web_dispatches')
       }
     }
   }, (err) => console.error("Error listener web:", err.message));
+
+
+
+// ==========================================
+// CRON: RECORDATORIOS AUTOMÁTICOS DE RENOVACIÓN
+// ==========================================
+async function checkUpcomingExpirations() {
+  if (!sock) return;
+
+  console.log("🔍 [CRON RENOVACIONES] Verificando cuentas próximas a vencer...");
+  try {
+    const activeAccountsSnap = await db.collection('inventory')
+      .where('status', '==', 'entregado')
+      .get();
+
+    if (activeAccountsSnap.empty) {
+      console.log("ℹ️ [CRON] No hay cuentas entregadas para auditar.");
+      return;
+    }
+
+    const now = new Date();
+
+    for (const doc of activeAccountsSnap.docs) {
+      const acc = doc.data();
+      if (acc.renewalNotified) continue; // Ya se le avisó para este ciclo
+      if (!acc.assignedTo || !acc.deliveredAt) continue;
+
+      const deliveredDate = acc.deliveredAt.toDate ? acc.deliveredAt.toDate() : null;
+      if (!deliveredDate) continue;
+
+      const diffDays = Math.floor((now - deliveredDate) / (1000 * 60 * 60 * 24));
+      const remainingDays = 30 - diffDays;
+
+      // Disparar aviso cuando falten entre 2 y 3 días para expirar
+      if (remainingDays >= 2 && remainingDays <= 3) {
+        const clientPhone = String(acc.assignedTo).replace(/\D/g, '').slice(-10);
+        const rawAlias = (acc.alias || 'servicio').toLowerCase().trim();
+
+        // Resolver JID canónico
+        let targetJid = clientPhone + '@s.whatsapp.net';
+        try {
+          const [res] = await sock.onWhatsApp('521' + clientPhone + '@s.whatsapp.net');
+          if (res && res.exists) targetJid = res.jid;
+          else {
+            const [res2] = await sock.onWhatsApp('52' + clientPhone + '@s.whatsapp.net');
+            if (res2 && res2.exists) targetJid = res2.jid;
+          }
+        } catch (eJid) {
+          targetJid = '521' + clientPhone + '@s.whatsapp.net';
+        }
+
+        // Consultar saldo del cliente
+        let userBalanceText = "$0.00 MXN";
+        try {
+          const userSnap = await db.collection('customers')
+            .where('phone', '==', clientPhone)
+            .limit(1)
+            .get();
+          if (!userSnap.empty) {
+            const bal = Number(userSnap.docs[0].data().balance || 0);
+            userBalanceText = "$" + bal.toFixed(2) + " MXN";
+          }
+        } catch (eBal) {}
+
+        let reminderMsg = "⏳ *RECORDATORIO DE RENOVACIÓN | CHERRY STREAM* ⏳\n";
+        reminderMsg += "━━━━━━━━━━━━━━━━━━━━\n";
+        reminderMsg += "Hola! Tu suscripción de *" + rawAlias.toUpperCase() + "* está próxima a vencer:\n\n";
+        reminderMsg += "📌 *Servicio:* " + rawAlias.toUpperCase() + "\n";
+        reminderMsg += "👤 *Cuenta vinculada:* " + (acc.email || 'N/A') + "\n";
+        reminderMsg += "⚠️ *Tiempo restante:* " + remainingDays + " días de vigencia\n";
+        reminderMsg += "━━━━━━━━━━━━━━━━━━━━\n";
+        reminderMsg += "💰 *Tu saldo disponible:* " + userBalanceText + "\n\n";
+        reminderMsg += "✨ *¿Deseas renovar sin interrupciones?*\n";
+        reminderMsg += "Escribe directamente:\n";
+        reminderMsg += "`-comprar " + rawAlias + "`\n\n";
+        reminderMsg += "O recarga saldo enviando: `-pagos`";
+
+        await sock.sendMessage(targetJid, { text: reminderMsg });
+        await doc.ref.update({ renewalNotified: true, renewalNotifiedAt: FieldValue.serverTimestamp() });
+
+        console.log(`🔔 [AVISO RENOVACIÓN ENVIADO] ${rawAlias} a ${clientPhone} (Restan ${remainingDays} días)`);
+      }
+    }
+  } catch (err) {
+    console.error("Error en tarea programada de renovaciones:", err.message);
+  }
+}
+
+// Iniciar revisión cada 24 horas y a los 30s del arranque
+setInterval(checkUpcomingExpirations, 24 * 60 * 60 * 1000);
+setTimeout(checkUpcomingExpirations, 30 * 1000);
