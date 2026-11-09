@@ -931,6 +931,151 @@ async function startBot() {
     }
 
     // COMANDO: -entregar <alias> <user o telefono> (Solo Admin)
+    
+    // ==========================================
+    // COMANDO -DELSTOCK (ELIMINAR CUENTA DE BÓVEDA)
+    // ==========================================
+    if (body.toLowerCase().startsWith('-delstock')) {
+      if (!isAdmin) {
+        await sendSafeMessage('⛔ Comando exclusivo del operador.');
+        return;
+      }
+
+      const parts = body.trim().split(/\s+/);
+      const alias = (parts[1] || '').toLowerCase().trim();
+
+      if (!alias) {
+        await sendSafeMessage(
+          "⚠️ *FORMATO INCORRECTO*\n\n" +
+          "Usa:\n" +
+          "`-delstock <alias>`\n\n" +
+          "💡 *Ejemplo para vaciar stock de un servicio:*\n" +
+          "`-delstock net`\n" +
+          "`-delstock prm`"
+        );
+        return;
+      }
+
+      try {
+        let catalog = [];
+        try {
+          catalog = JSON.parse(fs.readFileSync('catalogData.json', 'utf8'));
+        } catch (e) {
+          catalog = [];
+        }
+        const srv = catalog.find(c => c.alias.toLowerCase() === alias);
+        const serviceTitle = srv ? srv.name : alias.toUpperCase();
+
+        const qSnap = await db.collection('inventory')
+          .where('alias', '==', alias)
+          .where('status', '==', 'disponible')
+          .get();
+
+        if (qSnap.empty) {
+          await sendSafeMessage(`ℹ️ No hay cuentas disponibles en stock para *${serviceTitle}* (${alias}).`);
+          return;
+        }
+
+        const count = qSnap.size;
+        const batch = db.batch();
+        qSnap.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+
+        await sendSafeMessage(
+          `🗑️ *VACIADO DE BÓVEDA COMPLETADO* 🗑️\n` +
+          `━━━━━━━━━━━━━━━━━━━━\n` +
+          `🍿 *Servicio:* ${serviceTitle} (${alias})\n` +
+          `📦 *Cuentas eliminadas:* ${count}\n` +
+          `📊 *Stock actual disponible:* ⚪ Agotado (0)\n` +
+          `━━━━━━━━━━━━━━━━━━━━\n` +
+          `⚡ _El inventario en la tienda web se ha actualizado a cero._`
+        );
+      } catch (err) {
+        console.error("Error en -delstock masivo:", err);
+        await sendSafeMessage("⚠️ Error al purgar el inventario: " + err.message);
+      }
+      return;
+    }
+
+    // ==========================================
+    // COMANDO -CORTE (RESUMEN DIARIO DE CAJA)
+    // ==========================================
+    if (body.toLowerCase() === '-corte') {
+      if (!isAdmin) {
+        await sendSafeMessage('⛔ Comando exclusivo del operador.');
+        return;
+      }
+
+      try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        // Consultar órdenes de hoy
+        const ordersSnap = await db.collection('orders')
+          .where('createdAt', '>=', startOfDay)
+          .get();
+
+        let totalRecaudado = 0;
+        const ventasPorServicio = {};
+
+        ordersSnap.forEach(d => {
+          const o = d.data();
+          const p = Number(o.price || 0);
+          totalRecaudado += p;
+          const sName = o.serviceName || o.alias || 'Otros';
+          ventasPorServicio[sName] = (ventasPorServicio[sName] || 0) + 1;
+        });
+
+        // Revisar stock crítico
+        let catalog = [];
+        try {
+          catalog = JSON.parse(fs.readFileSync('catalogData.json', 'utf8'));
+        } catch(e) {}
+
+        let stockCriticoMsg = "";
+        for (const item of catalog) {
+          const invSnap = await db.collection('inventory')
+            .where('alias', '==', item.alias.toLowerCase())
+            .where('status', '==', 'disponible')
+            .get();
+          if (invSnap.size <= 1) {
+            stockCriticoMsg += `   • ${item.name} (${item.alias}): ${invSnap.size === 0 ? '⚪ Agotado' : '🟠 Solo 1'}\n`;
+          }
+        }
+
+        let desglose = "";
+        for (const [srv, qty] of Object.entries(ventasPorServicio)) {
+          desglose += `   • ${srv}: ${qty} venta(s)\n`;
+        }
+        if (!desglose) desglose = "   _Sin ventas registradas hoy todavía._\n";
+
+        const todayStr = new Date().toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', dateStyle: 'medium' });
+
+        const corteMsg = 
+          `📊 *CORTE DE CAJA DIARIO | CHERRY STREAM* 📊\n` +
+          `📅 *Fecha:* ${todayStr}\n` +
+          `━━━━━━━━━━━━━━━━━━━━\n` +
+          `💵 *Total recaudado:* $${totalRecaudado.toFixed(2)} MXN\n` +
+          `📦 *Cuentas vendidas hoy:* ${ordersSnap.size}\n\n` +
+          `🛒 *Desglose de entregas:*\n${desglose}\n` +
+          `⚠️ *Alertas de Stock Bajo / Agotado:*\n` +
+          (stockCriticoMsg || "   ✅ Todo el catálogo cuenta con stock suficiente.\n") +
+          `━━━━━━━━━━━━━━━━━━━━\n` +
+          `⚡ _Reporte generado automáticamente._`;
+
+        await sendSafeMessage(corteMsg);
+
+      } catch (err) {
+        console.error("Error en -corte:", err);
+        await sendSafeMessage("⚠️ Error al generar corte de caja: " + err.message);
+      }
+      return;
+    }
+
+
     if (body.toLowerCase().startsWith('-entregar')) {
       if (!isAdmin) {
         await sendSafeMessage('⛔ Comando exclusivo del operador.');
