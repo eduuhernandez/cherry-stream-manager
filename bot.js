@@ -936,78 +936,152 @@ async function startBot() {
         return;
       }
 
-      const parts = body.split(' ');
-      const alias = parts[1]?.toLowerCase().trim();
-      const target = parts[2]?.trim();
+      const parts = body.trim().split(/\s+/);
+      const alias = (parts[1] || '').toLowerCase().trim();
+      const targetRaw = (parts[2] || '').trim();
 
-      if (!alias || !target || !ALIAS_MAP[alias]) {
-        await sendSafeMessage("❌ *Uso correcto:*\n`-entregar <alias> <user>`\n\nEjemplo: `-entregar net Abcd12` o con teléfono `-entregar net 5512345678`");
+      let catalog = [];
+      try {
+        catalog = JSON.parse(fs.readFileSync('catalogData.json', 'utf8'));
+      } catch (e) {
+        catalog = [];
+      }
+
+      const item = catalog.find(c => c.alias.toLowerCase() === alias);
+
+      if (!alias || !targetRaw || !item) {
+        await sendSafeMessage(
+          "⚠️ *FORMATO INCORRECTO DE ENTREGA* ⚠️\n\n" +
+          "Usa:\n" +
+          "`-entregar <alias> <@mencion / usuario / telefono>`\n\n" +
+          "💡 *Ejemplos:*\n" +
+          "`-entregar prm @5517667021`\n" +
+          "`-entregar net Eduu15`\n" +
+          "`-entregar dis 5517667021`"
+        );
         return;
       }
 
       try {
         let targetPhone = '';
-        const codeRegex = /^[A-Z][a-z]{3}\d{2}$/;
+        let targetUser = targetRaw.replace('@', '');
 
-        if (codeRegex.test(target)) {
-          const userDoc = await db.collection('customers').doc(target).get();
-          if (!userDoc.exists) {
-            await sendSafeMessage(`⚠️ No se encontró al usuario con código *${target}* en Firestore.`);
-            return;
-          }
-          targetPhone = userDoc.data().phone;
+        // 1. Detectar si viene por mención en WhatsApp
+        const mentioned = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+        if (mentioned.length > 0) {
+          targetPhone = mentioned[0].replace(/@.*/, '').slice(-10);
         } else {
-          targetPhone = target.replace(/[^0-9]/g, '').slice(-10);
+          // 2. Extraer dígitos directos si es número
+          const pureDigits = targetRaw.replace(/\D/g, '');
+          if (pureDigits.length >= 10) {
+            targetPhone = pureDigits.slice(-10);
+          } else {
+            // 3. Buscar en Firestore por customerCode o ID
+            const userSnap = await db.collection('customers').doc(targetRaw).get();
+            if (userSnap.exists) {
+              targetPhone = (userSnap.data().phone || '').slice(-10);
+              targetUser = userSnap.data().customerCode || targetRaw;
+            } else {
+              const qSnap = await db.collection('customers').where('customerCode', '==', targetRaw).limit(1).get();
+              if (!qSnap.empty) {
+                targetPhone = (qSnap.docs[0].data().phone || '').slice(-10);
+                targetUser = targetRaw;
+              }
+            }
+          }
         }
 
         if (!targetPhone) {
-          await sendSafeMessage('⚠️ No se pudo determinar el número telefónico de destino.');
+          await sendSafeMessage("⚠️ No se pudo determinar el número o usuario de destino: " + targetRaw);
           return;
         }
 
-        const targetJid = (targetPhone.startsWith('52') ? targetPhone : `521${targetPhone}`) + '@s.whatsapp.net';
-
-        const querySnapshot = await db.collection('inventory')
+        // Buscar cuenta disponible en inventario
+        const invSnap = await db.collection('inventory')
           .where('alias', '==', alias)
           .where('status', '==', 'disponible')
           .limit(1)
           .get();
 
-        if (querySnapshot.empty) {
-          await sendSafeMessage(`⚠️ No hay cuentas disponibles en stock para el alias *"${alias}"*.`);
+        if (invSnap.empty) {
+          await sendSafeMessage("⚠️ No hay stock disponible en bóveda para el servicio *" + item.name + "* (" + alias + ").");
           return;
         }
 
-        const accountDoc = querySnapshot.docs[0];
+        const accountDoc = invSnap.docs[0];
         const accountData = accountDoc.data();
 
+        // Actualizar cuenta a estado entregado
         await accountDoc.ref.update({
-          status: 'ocupada',
+          status: 'entregado',
           assignedTo: targetPhone,
-          assignedUser: target,
+          assignedUser: targetUser,
           deliveredAt: FieldValue.serverTimestamp()
         });
 
-        const deliveryMsg = "🍒✨ *¡ENTREGA DE SERVICIO CHERRY STREAM!* ✨🍒\n\n" +
-          `Tu cuenta para *${ALIAS_MAP[alias]}* ya está activa:\n\n` +
-          `📧 *Correo:* ${accountData.email || 'N/A'}\n` +
-          `🔑 *Contraseña:* ${accountData.password || 'N/A'}\n` +
-          (accountData.profile ? `👤 *Perfil:* ${accountData.profile}\n` : '') +
-          (accountData.pin ? `🔒 *PIN:* ${accountData.pin}\n` : '') +
-          (accountData.expiration ? `⏳ *Vence:* ${accountData.expiration}\n` : '') +
-          "\n📌 *Reglas:* No cambies contraseñas ni perfiles para mantener la garantía activa.\n\n" +
-          "¡Gracias por tu preferencia! 🍿";
+        // Registrar orden manual
+        await db.collection('orders').add({
+          customerUser: targetUser,
+          customerPhone: targetPhone,
+          alias: alias,
+          serviceName: item.name,
+          price: item.price,
+          status: 'completado_manual',
+          source: 'operador_manual',
+          createdAt: FieldValue.serverTimestamp()
+        });
 
-        await sendSafeMessage(deliveryMsg, targetJid);
-        await sendSafeMessage(`✅ *Cuenta ${alias.toUpperCase()} entregada con éxito a ${target} (📱${targetPhone})*\nCorreo: ${accountData.email}`);
+        // Calcular stock restante
+        const remainingSnap = await db.collection('inventory')
+          .where('alias', '==', alias)
+          .where('status', '==', 'disponible')
+          .get();
+        const stockRestante = remainingSnap.size;
+
+        // Credenciales completas al privado
+        let privateMsg = '🎉 *¡ENTREGA DE SERVICIO: ' + item.name.toUpperCase() + '!* 🎉\n';
+        privateMsg += '━━━━━━━━━━━━━━━━━━━━\n';
+        privateMsg += '👤 *Correo / Usuario:* ' + accountData.email + '\n';
+        privateMsg += '🔑 *Contraseña:* ' + accountData.password + '\n';
+        if (accountData.profile) privateMsg += '🏷️ *Perfil:* ' + accountData.profile + '\n';
+        if (accountData.pin) privateMsg += '🔢 *PIN:* ' + accountData.pin + '\n';
+        if (accountData.expiration) privateMsg += '⏳ *Vence:* ' + accountData.expiration + '\n';
+        privateMsg += '━━━━━━━━━━━━━━━━━━━━\n';
+        privateMsg += '📌 *Reglas:* No alterar datos ni perfiles no asignados.\n\n';
+        privateMsg += '🍒⚡ *¡SERVICIO ASIGNADO POR EL OPERADOR!* ⚡🍒\n';
+        privateMsg += '👤 *Cliente:* ' + targetUser + '\n';
+        privateMsg += '🍿 *Servicio:* ' + item.name;
+
+        // JID directo limpio del cliente
+        const clientJid = targetPhone.replace(/\D/g, '') + '@s.whatsapp.net';
+        try {
+          await sock.sendMessage(clientJid, { text: privateMsg });
+        } catch (ePriv) {
+          console.error("Error enviando al privado del cliente:", ePriv.message);
+        }
+
+        // Ficha pública de confirmación
+        const confirmReceipt = '🍒📦 *¡ENTREGA MANUAL COMPLETADA!* 📦🍒\n' +
+          '━━━━━━━━━━━━━━━━━━━━\n' +
+          '🍿 *Servicio:* ' + item.name + ' (' + alias + ')\n' +
+          '👤 *Entregado a:* @' + targetPhone + '\n' +
+          '📊 *Stock restante:* ' + (stockRestante > 0 ? ('🟢 ' + stockRestante + ' disponible(s)') : '⚪ Agotado / Sobre Pedido') + '\n' +
+          '━━━━━━━━━━━━━━━━━━━━\n' +
+          '🔒 *Las credenciales fueron enviadas a su chat privado de forma segura.*';
+
+        await sock.sendMessage(from, {
+          text: confirmReceipt,
+          mentions: [clientJid]
+        });
 
       } catch (err) {
-        console.error('Error al entregar servicio:', err);
-        await sendSafeMessage('⚠️ Ocurrió un error al despachar la cuenta desde Firestore.');
+        console.error("Error en -entregar:", err);
+        await sendSafeMessage("⚠️ Error al realizar la entrega manual: " + err.message);
       }
       return;
     }
-  });
+
+      });
 }
 
 // Iniciar proceso
