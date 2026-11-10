@@ -1,6 +1,34 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
+<script id="cherry-admin-storage-guard">
+  (function() {
+    // Códigos de cliente que NO son administradores
+    const CODIGOS_CLIENTES_COMUNES = ["Eduu22"];
+    
+    // Lista autorizada de administradores principales
+    const ADMINS_AUTORIZADOS = [
+      "iolanycastillo27@gmail.com",
+      "jorgehimawari@gmail.com",
+      "edduardohg18@gmail.com",
+      "admin@cherrystream.com",
+      "llanelymonarca@gmail.com",
+      "Eduu15" // Tu usuario admin principal
+    ];
+
+    const usuarioActual = (localStorage.getItem('cherry_user_code') || '').trim();
+
+    // Si está explícitamente como cliente común o no pertenece a los autorizados
+    if (CODIGOS_CLIENTES_COMUNES.includes(usuarioActual) || (!ADMINS_AUTORIZADOS.includes(usuarioActual) && usuarioActual !== "")) {
+      alert("Acceso denegado: El usuario actual (" + (usuarioActual || "Cliente") + ") no tiene permisos de Administrador.");
+      window.location.replace("index.html");
+    }
+  })();
+</script>
+
+
+
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cherry Stream | Panel Super Admin ⚙️</title>

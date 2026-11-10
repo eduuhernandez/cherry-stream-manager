@@ -1,0 +1,2461 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cherry Streaming MX - Eduu Store</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  /* GENERADOR DE CEREZAS NATIVAS */
+  (function initDomCherries() {
+    const container = document.getElementById('cherryRainContainer');
+    if (!container) return;
+
+    const count = window.innerWidth < 768 ? 20 : 35;
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('span');
+      el.className = 'cherry-drop';
+      el.textContent = '🍒';
+      
+      const left = Math.random() * 100;
+      const size = Math.floor(Math.random() * 12) + 20;
+      const duration = Math.random() * 5 + 4;
+      const delay = Math.random() * 7;
+      
+      el.style.left = left + 'vw';
+      el.style.fontSize = size + 'px';
+      el.style.animationDuration = duration + 's';
+      el.style.animationDelay = '-' + delay + 's';
+      
+      container.appendChild(el);
+    }
+  })();
+
+
+  
+
+
+  /* GENERADOR NATIVO DE CEREZAS UNICODE */
+  (function initCherryRain() {
+    function launch() {
+      const container = document.getElementById('cherryRainContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const count = window.innerWidth < 768 ? 22 : 36;
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.className = 'cherry-drop';
+        span.textContent = '\uD83C\uDF52';
+        
+        const left = Math.random() * 95;
+        const size = Math.floor(Math.random() * 14) + 22;
+        const duration = Math.random() * 4 + 4.5;
+        const delay = Math.random() * 8;
+
+        span.style.left = left + 'vw';
+        span.style.fontSize = size + 'px';
+        span.style.animationDuration = duration + 's';
+        span.style.animationDelay = '-' + delay + 's';
+
+        container.appendChild(span);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', launch);
+    } else {
+      launch();
+    }
+  })();
+
+
+  /* GENERADOR NATIVO DE CEREZAS UNICODE */
+  (function initCherryRain() {
+    function launch() {
+      const container = document.getElementById('cherryRainContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const count = window.innerWidth < 768 ? 22 : 36;
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.className = 'cherry-drop';
+        span.textContent = '\uD83C\uDF52';
+        
+        const left = Math.random() * 95;
+        const size = Math.floor(Math.random() * 14) + 22;
+        const duration = Math.random() * 4 + 4.5;
+        const delay = Math.random() * 8;
+
+        span.style.left = left + 'vw';
+        span.style.fontSize = size + 'px';
+        span.style.animationDuration = duration + 's';
+        span.style.animationDelay = '-' + delay + 's';
+
+        container.appendChild(span);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', launch);
+    } else {
+      launch();
+    }
+  })();
+
+</script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-surface: #0a060e;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(255, 255, 255, 0.2);
+      
+      --primary: #9d174d;          
+      --primary-light: #fdf2f8;    
+      --primary-border: #fbcfe8;
+      --primary-hover: #831843;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --success-bg: #ecfdf5;
+      --success-text: #047857;
+      --success-border: #a7f3d0;
+
+      --warning-bg: #fffbeb;
+      --warning-text: #b45309;
+      --warning-border: #fde68a;
+
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --danger-border: #fecaca;
+
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(ellipse at top, #fff5f8 0%, #f8fafc 60%, #f1f5f9 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 16px 95px 16px;
+      line-height: 1.5;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    .form-panel, .toolbar-card, .stat-card, .platform-breakdown, .user-manage-card {
+      background: var(--card-bg) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.6) !important;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .account-item {
+      background: var(--card-bg) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.5) !important;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s ease;
+    }
+    .account-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      position: relative;
+      z-index: 20;
+    }
+
+    .brand-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #831843;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-tagline {
+      font-size: 0.82rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-cherry {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #be123c 0%, #831843 100%);
+      box-shadow: 0 4px 16px rgba(190, 18, 60, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .user-profile-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-badge {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.86rem;
+      color: var(--text-main);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover {
+      color: var(--danger-text);
+      background: var(--danger-bg);
+    }
+
+    .tabs-wrapper {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 20px;
+      scrollbar-width: none;
+    }
+    .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #334155;
+      padding: 9px 18px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .tab-btn:hover {
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+    .tab-btn.active {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 16px rgba(157, 23, 77, 0.45);
+    }
+
+    .badge-counter {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .tab-btn.active .badge-counter {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .platforms-carousel {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+    .platforms-carousel::-webkit-scrollbar { display: none; }
+
+    .platform-chip {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #475569;
+      padding: 7px 14px;
+      border-radius: 24px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .platform-chip:hover { color: #0f172a; }
+    .platform-chip.active {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .toolbar-card {
+      border-radius: 16px;
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 9px 14px 9px 36px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+
+    .sub-filters { display: flex; gap: 6px; }
+    .sub-filter-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .sub-filter-btn:hover { color: var(--text-main); }
+    .sub-filter-btn.active {
+      background: #e2e8f0;
+      color: var(--text-main);
+      border-color: #cbd5e1;
+    }
+
+    .accounts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .account-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      gap: 12px;
+      user-select: none;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .service-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .item-info { min-width: 0; }
+    .item-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-client {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .panel-pill-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #fdf2f8;
+      color: var(--primary);
+      border: 1px solid #fbcfe8;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-left: 6px;
+    }
+
+    .item-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .price-tag-preview {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: #f8fafc;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .status-pill {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-active {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+    .status-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .status-expired {
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+    }
+
+    .chevron-icon {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      transition: transform 0.25s ease;
+    }
+    .account-item.open .chevron-icon {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    .account-body {
+      display: none;
+      padding: 18px;
+      border-top: 1px solid #e2e8f0;
+      background: rgba(248, 250, 252, 0.7);
+    }
+    .account-item.open .account-body { display: block; }
+
+    .creds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .cred-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .cred-label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 0.5px;
+    }
+    .cred-val {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .copy-btn {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .finances-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 14px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .fin-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .fin-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .dates-strip {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin: 10px 0 6px 0;
+    }
+    .dates-strip b { color: var(--text-main); font-weight: 600; }
+
+    .progress-bar-bg {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .progress-bar-fill { height: 100%; transition: width 0.4s ease; }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-ws {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-ws:hover { opacity: 0.92; }
+
+    .btn-excel {
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+    .btn-excel:hover { opacity: 0.92; }
+
+    .btn-import {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+    .btn-import:hover { opacity: 0.92; }
+
+    .actions-mini { display: flex; gap: 6px; }
+    .btn-action-icon {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: var(--text-muted);
+      padding: 7px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .btn-action-icon:hover { border-color: #94a3b8; color: var(--text-main); }
+    .btn-action-icon.del:hover { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+
+    .form-panel {
+      border-radius: 18px;
+      padding: 28px;
+    }
+    .form-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .field-input, .field-select {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(157, 23, 77, 0.08);
+    }
+
+    .quick-days { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+    .quick-day-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .quick-day-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+
+    .calc-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calc-date {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .btn-submit-main {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      width: 100%;
+      padding: 13px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(157, 23, 77, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-submit-main:hover {
+      background: var(--primary-hover);
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .platform-breakdown {
+      border-radius: 16px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+    .breakdown-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .breakdown-table th {
+      padding: 10px 14px;
+      color: var(--text-muted);
+      border-bottom: 1px solid #cbd5e1;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .breakdown-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .user-manage-card {
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000000;
+      box-shadow: var(--shadow-lg);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    footer.clean-footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    footer.clean-footer span {
+      color: #f472b6;
+      font-weight: 700;
+    }
+
+    #authOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 2, 6, 0.82);
+      backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 16px;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 420px;
+      padding: 36px 32px;
+      text-align: center;
+    }
+
+    .auth-brand-cherry {
+      font-size: 56px;
+      line-height: 1;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 6px 14px rgba(157, 23, 77, 0.45));
+      display: inline-block;
+    }
+
+    .auth-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .auth-sub {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 22px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .auth-error-box {
+      display: none;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+  
+  
+
+  </style>
+</head>
+<body>
+  
+<style id="cherryRainStyles">
+  #cherryRainContainer {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    z-index: 999999 !important;
+  }
+  .cherry-drop {
+    position: absolute !important;
+    top: -60px !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    display: inline-block !important;
+    will-change: transform;
+    animation: fallCherry linear infinite;
+  }
+  @keyframes fallCherry {
+    0% {
+      transform: translateY(0vh) rotate(0deg) translateX(0px);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translateY(55vh) rotate(180deg) translateX(25px);
+      opacity: 0.9;
+    }
+    100% {
+      transform: translateY(112vh) rotate(360deg) translateX(-15px);
+      opacity: 0.9;
+    }
+  }
+</style>
+
+  <div id="cherryRainContainer"></div>
+  
+
+
+  
+  
+
+
+  
+  
+  
+  
+  
+  
+
+  <div id="authOverlay">
+    <div class="auth-card">
+      <div class="auth-brand-cherry">🍒</div>
+      <div class="auth-title">Cherry Streaming MX</div>
+      <div class="auth-sub" id="authSubtitle">Gestión formal de suscripciones y clientes</div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tabLoginBtn" onclick="cambiarModoAuth('login')">Iniciar Sesión</button>
+        <button type="button" class="auth-tab-btn" id="tabRegisterBtn" onclick="cambiarModoAuth('register')">Registrarse</button>
+      </div>
+
+      <div id="authErrorMsg" class="auth-error-box"></div>
+
+      <form id="authForm" onsubmit="ejecutarAutenticacion(event)">
+        <div class="field-group" style="margin-bottom: 14px; text-align:left;">
+          <label>Correo Electrónico</label>
+          <input type="email" id="authEmail" class="field-input" placeholder="tu_correo@gmail.com" required autocomplete="username">
+        </div>
+
+        <div class="field-group" style="margin-bottom: 14px; text-align:left;">
+          <label id="lblPassword">Contraseña</label>
+          <input type="password" id="authPassword" class="field-input" placeholder="••••••••" minlength="6" required autocomplete="current-password">
+        </div>
+
+        <div class="field-group" id="groupConfirmPass" style="margin-bottom: 18px; text-align:left; display:none;">
+          <label>Confirmar Contraseña</label>
+          <input type="password" id="authPasswordConfirm" class="field-input" placeholder="Repite tu contraseña" minlength="6" autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn-submit-main" id="authSubmitBtn">Entrar a la Plataforma</button>
+      </form>
+
+      <footer class="clean-footer" style="margin-top: 24px; padding-top: 14px; border: none; font-size: 0.78rem;">
+        Powered by <span>Eduu Store | Eduu Hernández</span>
+      </footer>
+    </div>
+  </div>
+
+  <div id="licenseBlockOverlay" style="display:none; position:fixed; inset:0; background:rgba(8, 2, 6, 0.94); z-index:999999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:24px; padding:40px 32px; max-width:440px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+      <div style="font-size:3.5rem; margin-bottom:12px;">🔒</div>
+      <h2 style="font-size:1.6rem; font-weight:700; color:#1e293b; margin-bottom:8px;">Acceso Restringido</h2>
+      <p id="licenseBlockReason" style="color:#64748b; font-size:0.95rem; line-height:1.5; margin-bottom:24px;">
+        Tu suscripción a <b>Cherry Streaming MX</b> se encuentra pendiente de activación o ha expirado.
+      </p>
+      <a href="https://wa.me/5217201480602?text=Hola,%20acabo%20de%20registrarme%20en%20Cherry%20Streaming%20y%20deseo%20activar%20mi%20membresía" target="_blank" style="display:block; background:#be123c; color:#fff; font-weight:700; padding:14px; border-radius:12px; text-decoration:none; margin-bottom:14px;">
+        📲 Enviar Comprobante / Activar
+      </a>
+      <button type="button" onclick="logoutUser()" style="background:transparent; border:none; color:#94a3b8; font-weight:600; cursor:pointer; font-size:0.9rem;">
+        Cerrar Sesión
+      </button>
+    </div>
+  </div>
+
+  <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display:none;" onchange="procesarImportacionExcel(event)">
+
+  <div class="container" id="mainDashboard" style="display: none;">
+    <header>
+      <div class="brand-group">
+        <div class="brand-logo-cherry">🍒</div>
+        <div>
+          <div class="brand-title">Cherry Streaming MX</div>
+          <div class="brand-tagline">Panel de Control & Clientes</div>
+        </div>
+      </div>
+      <div class="user-profile-bar">
+        <div class="user-badge">
+          <span>👤</span>
+          <span id="userDisplayEmail">usuario@correo.com</span>
+        </div>
+        <button type="button" class="btn-logout" onclick="logoutUser()">
+  <a href="admin.html" style="background:#e5383b; color:#fff; text-decoration:none; padding:7px 12px; border-radius:8px; font-weight:bold; font-size:0.85rem; margin-right:10px; display:inline-flex; align-items:center; gap:6px;">
+    📦 Bóveda Stock Bot
+  </a>
+Cerrar sesión</button>
+      </div>
+    </header>
+
+    <nav class="tabs-wrapper">
+      <button type="button" class="tab-btn active" onclick="switchMainTab('tab-cuentas')">
+        <span>📋 Inventario</span>
+        <span class="badge-counter" id="badge-all">0</span>
+      </button>
+      <button type="button" class="tab-btn" onclick="switchMainTab('tab-registrar')">
+        <span>➕ Nueva Venta</span>
+      </button>
+      <button type="button" class="tab-btn" onclick="switchMainTab('tab-vencer')">
+        <span>⚠️ Vencimientos</span>
+        <span class="badge-counter" id="badge-alerts" style="background: var(--danger-bg); color: var(--danger-text);">0</span>
+      </button>
+      <button type="button" class="tab-btn" onclick="switchMainTab('tab-reportes')">
+        <span>📊 Finanzas</span>
+      </button>
+      <button type="button" class="tab-btn" id="tabBtnSuperAdmin" style="display:none; background:#0f172a; color:#f8fafc;" onclick="switchMainTab('tab-admin-licencias')">
+        <span>👑 Licencias</span>
+        <span class="badge-counter" id="badge-users-count" style="background: #334155; color:#fff;">0</span>
+      </button>
+    </nav>
+
+    <section id="tab-cuentas" class="tab-content active">
+      <div class="platforms-carousel" id="platformCarousel"></div>
+
+      <div class="toolbar-card">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar por cliente, cuenta, servicio o panel..." oninput="renderAccounts()">
+        </div>
+        
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn-import" onclick="document.getElementById('excelFileInput').click()">
+            <span>📥 Importar Excel</span>
+          </button>
+          <button type="button" class="btn-excel" onclick="exportToExcel()">
+            <span>📊 Descargar Excel</span>
+          </button>
+        </div>
+
+        <div class="sub-filters">
+          <button type="button" class="sub-filter-btn active" data-filter="todas" onclick="setSubFilter('todas', this)">Todas</button>
+          <button type="button" class="sub-filter-btn" data-filter="activas" onclick="setSubFilter('activas', this)">Activas</button>
+          <button type="button" class="sub-filter-btn" data-filter="vencer" onclick="setSubFilter('vencer', this)">Por Vencer</button>
+          <button type="button" class="sub-filter-btn" data-filter="vencidas" onclick="setSubFilter('vencidas', this)">Vencidas</button>
+        </div>
+      </div>
+
+      <div id="accountsList" class="accounts-list"></div>
+    </section>
+
+    <section id="tab-registrar" class="tab-content">
+      <div class="form-panel">
+        <h2 class="form-title" id="formHeaderTitle">📝 Registrar Suscripción</h2>
+        <form id="accountForm" onsubmit="handleAccountSave(event)">
+          <input type="hidden" id="editDocId">
+
+          <div class="form-grid">
+            <div id="platformsContainer" style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px;">
+              <div class="service-entry-row" style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 16px; border-radius: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; position: relative;">
+                <div class="field-group">
+                  <label>Servicio / Plataforma</label>
+                  <select class="field-select f_service" required>
+                    <option value="Netflix">📺 Netflix</option>
+                    <option value="Netflix Priv">🧙‍♀️ Netflix Priv</option>
+                    <option value="Disney Standar">👻 Disney Standar</option>
+                    <option value="Disney Hulu">🧌 Disney Hulu</option>
+                    <option value="Max (HBO)">🩸 Max / HBO</option>
+                    <option value="Prime Video">🦇 Prime Video</option>
+                    <option value="Spotify">💚 Spotify</option>
+                    <option value="YouTube (Invitación)">📩 YouTube (Invitación)</option>
+                    <option value="YouTube (Individual)">👤 YouTube (Individual)</option>
+                    <option value="YouTube (Familiar)">👨‍👩‍👧 YouTube (Familiar)</option>
+                    <option value="Paramount+">💀 Paramount+</option>
+                    <option value="Crunchyroll">🧛 Crunchyroll</option>
+                    <option value="ViX">🎃 ViX</option>
+                    <option value="Universal+">👻 Universal+</option>
+                    <option value="MUBI">🔮 MUBI</option>
+                    <option value="FOX ONE">🦊 FOX ONE</option>
+                    <option value="Apple TV+">🍎 Apple TV+</option>
+                    <option value="Apple Music">🍎 Apple Music</option>
+                    <option value="Amazon Music">🎵 Amazon Music</option>
+                    <option value="Deezer">🎵 Deezer</option>
+                    <option value="Claro Video">📺 Claro Video</option>
+                    <option value="IPTV / IPTV Pro">📺 IPTV / IPTV Pro</option>
+                    <option value="Canva Edu">🎨 Canva Edu</option>
+                    <option value="Duolingo">📚 Duolingo</option>
+                    <option value="ChatGPT">🤖 ChatGPT</option>
+                    <option value="Otro">🔖 Otro Servicio</option>
+                  </select>
+                </div>
+
+                <div class="field-group">
+                  <label>Correo / Usuario</label>
+                  <input type="text" class="field-input f_user" placeholder="ejemplo@correo.com" required>
+                </div>
+
+                <div class="field-group">
+                  <label>Contraseña</label>
+                  <input type="text" class="field-input f_pass" placeholder="Contraseña de la cuenta" required>
+                </div>
+
+                <div class="field-group">
+                  <label>Perfil / PIN / Indicaciones</label>
+                  <input type="text" class="field-input f_notes" placeholder="Ej. Perfil 1, PIN 1234">
+                </div>
+              </div>
+            </div>
+
+            <div style="grid-column: 1 / -1; margin-top: -6px; margin-bottom: 8px;">
+              <button type="button" id="btnAddPlatformRow" onclick="addPlatformRow()" class="tab-btn" style="background:#f1f5f9; border-color:#cbd5e1; color:var(--primary); font-weight:700;">
+                ➕ Añadir otra plataforma al cliente
+              </button>
+            </div>
+
+            <!-- BLOQUE DE PANEL, MODALIDAD Y GESTION DE PERFILES -->
+            <div style="grid-column: 1 / -1; background: #fff1f2; padding: 18px; border-radius: 14px; border: 1px solid #fecdd3; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
+              <div class="field-group">
+                <label style="color: var(--primary);">PANEL / PROVEEDOR DE ORIGEN</label>
+                <input type="text" id="f_panelOrigen" class="field-input" placeholder="Ej. Panel Alfa, Mayorista X, Stock Propio...">
+              </div>
+              <div class="field-group">
+                <label style="color: var(--primary);">MODALIDAD DE VENTA</label>
+                <select id="f_modalidad" class="field-select" onchange="calcPerfilShare()">
+                  <option value="perfiles">Por Perfiles</option>
+                  <option value="completa">Cuenta Completa</option>
+                </select>
+              </div>
+              <div class="field-group" id="box-num-perfiles">
+                <label style="color: var(--primary);">TOTAL PERFILES EN CUENTA</label>
+                <input type="number" id="f_numPerfiles" class="field-input" value="5" min="1" max="10" oninput="calcPerfilShare()" onchange="calcPerfilShare()">
+              </div>
+              <div class="field-group" id="box-costo-unitario">
+                <label style="color: #047857;">ANÁLISIS DE COSTO & MARGEN ($)</label>
+                <input type="text" id="f_costoUnitarioCalculado" class="field-input" readonly style="background: #ecfdf5; border-color: #a7f3d0; color: #047857; font-weight: 700;">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>WhatsApp del Cliente (10 dígitos)</label>
+              <input type="tel" id="f_phone" class="field-input" placeholder="Ej. 5512345678">
+            </div>
+
+            <div class="field-group">
+              <label>Anticipación de Alerta (Días)</label>
+              <input type="number" id="f_alertDays" class="field-input" min="1" max="30" value="3" required>
+            </div>
+
+            <div class="field-group">
+              <label>Nombre del Cliente</label>
+              <input type="text" id="f_client" class="field-input" placeholder="Ej. Laura Gómez" required>
+            </div>
+
+            <div class="field-group">
+              <label>Fecha de Inicio</label>
+              <input type="date" id="f_startDate" class="field-input" required onchange="calculateExpiryPreview()">
+            </div>
+
+            <div class="field-group">
+              <label>Días Contratados</label>
+              <input type="number" id="f_days" class="field-input" min="1" value="30" required oninput="calculateExpiryPreview()">
+              <div class="quick-days">
+                <button type="button" class="quick-day-btn" onclick="setQuickDays(5)">5d</button>
+                <button type="button" class="quick-day-btn" onclick="setQuickDays(7)">7d</button>
+                <button type="button" class="quick-day-btn" onclick="setQuickDays(15)">15d</button>
+                <button type="button" class="quick-day-btn" onclick="setQuickDays(30)">30d</button>
+                <button type="button" class="quick-day-btn" onclick="setQuickDays(60)">60d</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>Costo de Inversión Total ($)</label>
+              <input type="number" id="f_costPrice" class="field-input" step="0.5" placeholder="0.00" value="0" required oninput="calcPerfilShare()" onchange="calcPerfilShare()">
+            </div>
+
+            <div class="field-group">
+              <label>Precio de Venta Total ($)</label>
+              <input type="number" id="f_sellPrice" class="field-input" step="0.5" placeholder="0.00" value="0" required oninput="calcPerfilShare()" onchange="calcPerfilShare()">
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div style="font-size:0.92rem; color:var(--text-muted); font-weight:600;">Fecha de expiración proyectada:</div>
+            <div class="calc-date" id="expiryPreviewText">--/--/----</div>
+          </div>
+
+          <div style="display:flex; gap:12px;">
+            <button type="submit" class="btn-submit-main" id="formSubmitBtn">Guardar Registro</button>
+            <button type="button" id="btnCancelEdit" class="tab-btn" style="display:none;" onclick="cancelEdit()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="tab-vencer" class="tab-content">
+      <div id="urgentAccountsList" class="accounts-list"></div>
+    </section>
+
+    <section id="tab-reportes" class="tab-content">
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px;">
+        <button type="button" class="btn-import" onclick="document.getElementById('excelFileInput').click()">
+          <span>📥 Importar Excel</span>
+        </button>
+        <button type="button" class="btn-excel" onclick="exportToExcel()">
+          <span>📊 Exportar Todo a Excel</span>
+        </button>
+      </div>
+      <div class="report-grid">
+        <div class="stat-card">
+          <div class="stat-label">Ingresos Totales</div>
+          <div class="stat-value" id="stat-total-ventas">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Inversión Realizada</div>
+          <div class="stat-value" id="stat-total-compras" style="color: var(--text-muted);">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ganancia Neta</div>
+          <div class="stat-value" id="stat-total-ganancia" style="color: var(--primary);">$0.00</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Suscripciones Activas</div>
+          <div class="stat-value" id="stat-total-activas">0</div>
+        </div>
+      </div>
+
+      <div class="platform-breakdown">
+        <table class="breakdown-table">
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Cuentas</th>
+              <th>Inversión</th>
+              <th>Ventas</th>
+              <th>Ganancia</th>
+            </tr>
+          </thead>
+          <tbody id="platformTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-admin-licencias" class="tab-content">
+      <div class="form-panel" style="margin-bottom: 20px;">
+        <h2 class="form-title">👑 Panel Super Admin: Gestión de Licencias</h2>
+        <p style="color: var(--text-muted); font-size:0.9rem; margin-bottom:16px;">
+          Activa o bloquea el acceso de clientes directamente desde tu celular.
+        </p>
+        <div id="superAdminUsersList"></div>
+      </div>
+    </section>
+
+    <footer class="clean-footer">
+      Powered by <span>Eduu Store | Eduu Hernández</span> &mdash; Control Administrativo
+    </footer>
+  </div>
+
+  <div id="toast" class="toast">Notificación</div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpL93xKbUc1ez7dR1ko_mgjCTcOzMtOsw",
+      authDomain: "cherry-streaming-mx.firebaseapp.com",
+      projectId: "cherry-streaming-mx",
+      storageBucket: "cherry-streaming-mx.firebasestorage.app",
+      messagingSenderId: "836275445121",
+      appId: "1:836275445121:web:52715ded272c2d7a911c80"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const SUPER_ADMIN_EMAILS = [
+      'xolanybami21@gmail.com',
+      'jorgehimawari@gmail.com'
+    ];
+
+    let currentUser = null;
+    let isSuperAdmin = false;
+    let accounts = [];
+    let unsubscribeSnapshot = null;
+    let unsubscribeUsersSnapshot = null;
+    let modoActualAuth = 'login';
+    let selectedPlatform = 'todas';
+    let currentSubFilter = 'todas';
+
+    const SERVICE_ICONS = {
+      'Netflix': '📺',
+      'Netflix Priv': '🧙‍♀️',
+      'Disney Standar': '👻',
+      'Disney Hulu': '🧌',
+      'Max (HBO)': '🩸',
+      'Prime Video': '🦇',
+      'Spotify': '💚',
+      'YouTube (Invitación)': '📩',
+      'YouTube (Individual)': '👤',
+      'YouTube (Familiar)': '👨‍👩‍👧',
+      'Paramount+': '💀',
+      'Crunchyroll': '🧛',
+      'ViX': '🎃',
+      'Universal+': '👻',
+      'MUBI': '🔮',
+      'FOX ONE': '🦊',
+      'Apple TV+': '🍎',
+      'Apple Music': '🍎',
+      'Amazon Music': '🎵',
+      'Deezer': '🎵',
+      'Claro Video': '📺',
+      'IPTV / IPTV Pro': '📺',
+      'Canva Edu': '🎨',
+      'Duolingo': '📚',
+      'ChatGPT': '🤖',
+      'Otro': '🔖'
+    };
+
+    const platforms = ['todas', 'Netflix', 'Netflix Priv', 'Disney Standar', 'Disney Hulu', 'Max (HBO)', 'Prime Video', 'Spotify', 'YouTube (Invitación)', 'YouTube (Individual)', 'YouTube (Familiar)', 'Paramount+', 'Crunchyroll', 'ViX', 'Universal+', 'MUBI', 'FOX ONE', 'Apple TV+', 'Apple Music', 'Amazon Music', 'Deezer', 'Claro Video', 'IPTV / IPTV Pro', 'Canva Edu', 'Duolingo', 'ChatGPT', 'Otro'];
+
+    function calcPerfilShare() {
+      const modEl = document.getElementById('f_modalidad');
+      const numPerfEl = document.getElementById('f_numPerfiles');
+      const costEl = document.getElementById('f_costPrice');
+      const sellEl = document.getElementById('f_sellPrice');
+      const outEl = document.getElementById('f_costoUnitarioCalculado');
+      const boxPerfiles = document.getElementById('box-num-perfiles');
+
+      if (!modEl || !outEl || !costEl) return;
+
+      const mod = modEl.value;
+      const totalCost = parseFloat(costEl.value) || 0;
+      const sellPrice = parseFloat(sellEl ? sellEl.value : 0) || 0;
+      let numPerf = parseInt(numPerfEl ? numPerfEl.value : 5, 10) || 1;
+      if (numPerf < 1) numPerf = 1;
+
+      if (mod === 'completa') {
+        if (boxPerfiles) boxPerfiles.style.opacity = '0.35';
+        if (numPerfEl) numPerfEl.disabled = true;
+        const ganancia = sellPrice - totalCost;
+        outEl.value = 'Costo: $' + totalCost.toFixed(2) + ' | Gan: $' + ganancia.toFixed(2);
+        outEl.style.color = ganancia >= 0 ? '#047857' : '#b91c1c';
+      } else {
+        if (boxPerfiles) boxPerfiles.style.opacity = '1';
+        if (numPerfEl) numPerfEl.disabled = false;
+        const unitCost = totalCost / numPerf;
+        const ganancia = sellPrice - unitCost;
+        outEl.value = 'Costo/p: $' + unitCost.toFixed(2) + ' | Gan: $' + ganancia.toFixed(2);
+        outEl.style.color = ganancia >= 0 ? '#047857' : '#b91c1c';
+      }
+    }
+
+    function cambiarModoAuth(modo) {
+      modoActualAuth = modo;
+      hideAuthError();
+      const tabLogin = document.getElementById('tabLoginBtn');
+      const tabReg = document.getElementById('tabRegisterBtn');
+      const submitBtn = document.getElementById('authSubmitBtn');
+      const authSub = document.getElementById('authSubtitle');
+      const groupConfirm = document.getElementById('groupConfirmPass');
+      const passConfirm = document.getElementById('authPasswordConfirm');
+
+      if (modo === 'login') {
+        if (tabLogin) tabLogin.className = 'auth-tab-btn active';
+        if (tabReg) tabReg.className = 'auth-tab-btn';
+        if (authSub) authSub.innerText = 'Gestión formal de suscripciones y clientes';
+        if (groupConfirm) groupConfirm.style.display = 'none';
+        if (passConfirm) passConfirm.removeAttribute('required');
+        if (submitBtn) submitBtn.innerText = 'Entrar a la Plataforma';
+      } else {
+        if (tabReg) tabReg.className = 'auth-tab-btn active';
+        if (tabLogin) tabLogin.className = 'auth-tab-btn';
+        if (authSub) authSub.innerText = 'Crea una cuenta para comenzar a administrar (3 días de prueba gratis)';
+        if (groupConfirm) groupConfirm.style.display = 'flex';
+        if (passConfirm) passConfirm.setAttribute('required', 'true');
+        if (submitBtn) submitBtn.innerText = 'Crear Cuenta';
+      }
+    }
+
+    function showAuthError(msg) {
+      const errBox = document.getElementById('authErrorMsg');
+      if (!errBox) return;
+      errBox.innerHTML = msg;
+      errBox.style.display = 'block';
+    }
+
+    function hideAuthError() {
+      const errBox = document.getElementById('authErrorMsg');
+      if (!errBox) return;
+      errBox.style.display = 'none';
+      errBox.innerHTML = '';
+    }
+
+    async function ejecutarAutenticacion(e) {
+      e.preventDefault();
+      hideAuthError();
+
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('authPassword').value;
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      if (modoActualAuth === 'register') {
+        const passConfirm = document.getElementById('authPasswordConfirm').value;
+        if (pass !== passConfirm) {
+          showAuthError("Las contraseñas ingresadas no coinciden.");
+          return;
+        }
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Procesando...';
+
+      try {
+        if (modoActualAuth === 'login') {
+          await auth.signInWithEmailAndPassword(email, pass);
+          showToast("Inicio de sesión correcto");
+        } else {
+          const cred = await auth.createUserWithEmailAndPassword(email, pass);
+          const isSA = SUPER_ADMIN_EMAILS.includes(email);
+          const diasDemo = 3;
+          const ahora = Date.now();
+          const vigenciaDemo = ahora + (diasDemo * 24 * 60 * 60 * 1000);
+          const vigenciaAdmin = ahora + (3650 * 24 * 60 * 60 * 1000);
+
+          await db.collection("users").doc(cred.user.uid).set({
+            email: email,
+            status: "active",
+            validUntil: isSA ? vigenciaAdmin : vigenciaDemo,
+            createdAt: ahora
+          });
+          showToast("¡Cuenta creada con éxito!");
+        }
+      } catch (error) {
+        console.error("Firebase Auth:", error);
+        let mensaje = error.message;
+        if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          mensaje = 'Credenciales incorrectas.';
+        } else if (error.code === 'auth/user-not-found') {
+          mensaje = 'No existe cuenta con este correo. Ve a "Registrarse".';
+        } else if (error.code === 'auth/email-already-in-use') {
+          mensaje = 'El correo ya está registrado. Inicia sesión normalmente.';
+        } else if (error.code === 'auth/weak-password') {
+          mensaje = 'La contraseña debe contener al menos 6 caracteres.';
+        }
+        showAuthError(mensaje);
+        showToast(mensaje);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = modoActualAuth === 'login' ? 'Entrar a la Plataforma' : 'Crear Cuenta';
+      }
+    }
+
+    auth.onAuthStateChanged(function(user) {
+      if (user) {
+        currentUser = user;
+        const emailLower = (user.email || '').toLowerCase();
+        isSuperAdmin = SUPER_ADMIN_EMAILS.includes(emailLower);
+
+        document.getElementById('authOverlay').style.display = 'none';
+
+        if (isSuperAdmin) {
+          document.getElementById('licenseBlockOverlay').style.display = 'none';
+          document.getElementById('mainDashboard').style.display = 'block';
+          document.getElementById('userDisplayEmail').innerText = user.email + ' (Super Admin)';
+          const btnAdmin = document.getElementById('tabBtnSuperAdmin');
+          if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+          subscribeToAccounts(user.uid);
+          initSuperAdminListener();
+        } else {
+          const btnAdmin = document.getElementById('tabBtnSuperAdmin');
+          if (btnAdmin) btnAdmin.style.display = 'none';
+          const userDocRef = db.collection("users").doc(user.uid);
+          userDocRef.onSnapshot(function(doc) {
+            const data = doc.data();
+            const ahora = Date.now();
+            const tieneAcceso = data && data.status === 'active' && data.validUntil > ahora;
+
+            if (tieneAcceso) {
+              document.getElementById('licenseBlockOverlay').style.display = 'none';
+              document.getElementById('mainDashboard').style.display = 'block';
+              document.getElementById('userDisplayEmail').innerText = user.email;
+              subscribeToAccounts(user.uid);
+            } else {
+              document.getElementById('mainDashboard').style.display = 'none';
+              document.getElementById('licenseBlockOverlay').style.display = 'flex';
+
+              if (data && data.validUntil && data.validUntil <= ahora) {
+                const f = new Date(data.validUntil).toLocaleDateString('es-MX');
+                document.getElementById('licenseBlockReason').innerHTML = 'Tu membresía finalizó el <b>' + f + '</b>. Contacta soporte para renovar.';
+              } else {
+                document.getElementById('licenseBlockReason').innerHTML = 'Tu cuenta requiere activación para desbloquear el panel.';
+              }
+            }
+          });
+        }
+
+      } else {
+        currentUser = null;
+        isSuperAdmin = false;
+        if (unsubscribeSnapshot) unsubscribeSnapshot();
+        if (unsubscribeUsersSnapshot) unsubscribeUsersSnapshot();
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.getElementById('mainDashboard').style.display = 'none';
+        document.getElementById('licenseBlockOverlay').style.display = 'none';
+        const btnAdmin = document.getElementById('tabBtnSuperAdmin');
+        if (btnAdmin) btnAdmin.style.display = 'none';
+      }
+    });
+
+    function logoutUser() {
+      auth.signOut().then(function() { showToast("Sesión cerrada"); });
+    }
+
+    function subscribeToAccounts(userId) {
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      unsubscribeSnapshot = db.collection("users").doc(userId).collection("accounts")
+        .orderBy("createdAt", "desc")
+        .onSnapshot(function(snapshot) {
+          accounts = [];
+          snapshot.forEach(function(doc) {
+            accounts.push(Object.assign({ id: doc.id }, doc.data()));
+          });
+          updateDashboard();
+        }, function(err) {
+          console.error("Error snapshot:", err);
+        });
+    }
+
+    function initSuperAdminListener() {
+      if (!isSuperAdmin) return;
+      if (unsubscribeUsersSnapshot) unsubscribeUsersSnapshot();
+
+      unsubscribeUsersSnapshot = db.collection("users").onSnapshot(function(snapshot) {
+        const usersListEl = document.getElementById('superAdminUsersList');
+        const badge = document.getElementById('badge-users-count');
+        const docs = [];
+        snapshot.forEach(function(d) { docs.push(Object.assign({ id: d.id }, d.data())); });
+
+        if (badge) badge.innerText = docs.length;
+        if (!usersListEl) return;
+
+        if (docs.length === 0) {
+          usersListEl.innerHTML = '<div style="color:var(--text-muted); font-size:0.9rem;">No hay usuarios registrados aún.</div>';
+          return;
+        }
+
+        const ahora = Date.now();
+        usersListEl.innerHTML = docs.map(function(u) {
+          const email = u.email || 'Sin correo';
+          const esActivo = u.status === 'active' && u.validUntil > ahora;
+          const fechaVence = u.validUntil ? new Date(u.validUntil).toLocaleDateString('es-MX') : 'Nunca';
+          const esSA = SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
+
+          return '<div class="user-manage-card">' +
+            '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
+              '<div>' +
+                '<div style="font-weight:700; color:var(--text-main); font-size:0.95rem;">' + email + '</div>' +
+                '<div style="font-size:0.8rem; color:var(--text-muted);">' +
+                  'Estado: <b style="color:' + (esActivo ? 'var(--success-text)' : 'var(--danger-text)') + ';">' + (esActivo ? 'ACTIVO' : 'EXPIRADO') + '</b> | Vence: <b>' + fechaVence + '</b>' +
+                '</div>' +
+              '</div>' +
+              (esSA ? '<span style="background:#0f172a; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">ADMIN</span>' : '') +
+            '</div>' +
+            (!esSA ? '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">' +
+              '<button type="button" class="quick-day-btn" onclick="adminDarDias(\'' + u.id + '\', \'' + email + '\', 3)">+3d Demo</button>' +
+              '<button type="button" class="quick-day-btn" onclick="adminDarDias(\'' + u.id + '\', \'' + email + '\', 30)">+30 días</button>' +
+              '<button type="button" class="quick-day-btn" style="background:#fee2e2; color:#b91c1c;" onclick="adminPausar(\'' + u.id + '\', \'' + email + '\')">Pausar</button>' +
+            '</div>' : '') +
+          '</div>';
+        }).join('');
+      });
+    }
+
+    async function adminDarDias(userId, email, dias) {
+      try {
+        const userRef = db.collection("users").doc(userId);
+        const doc = await userRef.get();
+        const data = doc.data() || {};
+        const ahora = Date.now();
+        const base = (data.validUntil && data.validUntil > ahora) ? data.validUntil : ahora;
+        const nuevoVencimiento = base + (dias * 24 * 60 * 60 * 1000);
+
+        await userRef.set({
+          email: email,
+          status: 'active',
+          validUntil: nuevoVencimiento,
+          updatedAt: ahora
+        }, { merge: true });
+
+        showToast('+' + dias + ' días asignados');
+      } catch (err) {
+        showToast("Error: " + err.message);
+      }
+    }
+
+    async function adminPausar(userId, email) {
+      if (!confirm('¿Bloquear acceso a ' + email + '?')) return;
+      try {
+        await db.collection("users").doc(userId).set({
+          status: 'expired',
+          validUntil: Date.now() - 1000,
+          updatedAt: Date.now()
+        }, { merge: true });
+        showToast('Acceso pausado');
+      } catch (err) {
+        showToast("Error: " + err.message);
+      }
+    }
+
+    function addPlatformRow(data) {
+      data = data || {};
+      const container = document.getElementById('platformsContainer');
+      const row = document.createElement('div');
+      row.className = 'service-entry-row';
+      row.style = 'background: #f8fafc; border: 1px solid #cbd5e1; padding: 16px; border-radius: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; position: relative;';
+      
+      row.innerHTML = '<div class="field-group">' +
+        '<label>Servicio / Plataforma</label>' +
+        '<select class="field-select f_service" required>' +
+          '<option value="Netflix">📺 Netflix</option>' +
+          '<option value="Netflix Priv">🧙‍♀️ Netflix Priv</option>' +
+          '<option value="Disney Standar">👻 Disney Standar</option>' +
+          '<option value="Disney Hulu">🧌 Disney Hulu</option>' +
+          '<option value="Max (HBO)">🩸 Max / HBO</option>' +
+          '<option value="Prime Video">🦇 Prime Video</option>' +
+          '<option value="Spotify">💚 Spotify</option>' +
+          '<option value="YouTube (Invitación)">📩 YouTube (Invitación)</option>' +
+          '<option value="YouTube (Individual)">👤 YouTube (Individual)</option>' +
+          '<option value="YouTube (Familiar)">👨‍👩‍👧 YouTube (Familiar)</option>' +
+          '<option value="Paramount+">💀 Paramount+</option>' +
+          '<option value="Crunchyroll">🧛 Crunchyroll</option>' +
+          '<option value="ViX">🎃 ViX</option>' +
+          '<option value="Universal+">👻 Universal+</option>' +
+          '<option value="MUBI">🔮 MUBI</option>' +
+          '<option value="FOX ONE">🦊 FOX ONE</option>' +
+          '<option value="Apple TV+">🍎 Apple TV+</option>' +
+          '<option value="Apple Music">🍎 Apple Music</option>' +
+          '<option value="Amazon Music">🎵 Amazon Music</option>' +
+          '<option value="Deezer">🎵 Deezer</option>' +
+          '<option value="Claro Video">📺 Claro Video</option>' +
+          '<option value="IPTV / IPTV Pro">📺 IPTV / IPTV Pro</option>' +
+          '<option value="Canva Edu">🎨 Canva Edu</option>' +
+          '<option value="Duolingo">📚 Duolingo</option>' +
+          '<option value="ChatGPT">🤖 ChatGPT</option>' +
+          '<option value="Otro">🔖 Otro Servicio</option>' +
+        '</select>' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label>Correo / Usuario</label>' +
+        '<input type="text" class="field-input f_user" placeholder="ejemplo@correo.com" required value="' + (data.user || '') + '">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label>Contraseña</label>' +
+        '<input type="text" class="field-input f_pass" placeholder="Contraseña" required value="' + (data.pass || '') + '">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label>Perfil / PIN / Indicaciones</label>' +
+        '<input type="text" class="field-input f_notes" placeholder="Ej. Perfil 2, PIN 5678" value="' + (data.notes || '') + '">' +
+      '</div>' +
+      '<div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">' +
+        '<button type="button" onclick="this.closest(\x27.service-entry-row\x27).remove()" style="background: transparent; border: none; color: var(--danger-text); font-weight: 700; cursor: pointer; font-size: 0.85rem;">✕ Quitar plataforma</button>' +
+      '</div>';
+
+      if (data.service) {
+        row.querySelector('.f_service').value = data.service;
+      }
+
+      container.appendChild(row);
+    }
+
+    async function handleAccountSave(e) {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const editId = document.getElementById('editDocId').value;
+      const rows = document.querySelectorAll('.service-entry-row');
+      if (rows.length === 0) {
+        showToast("Agrega al menos una plataforma");
+        return;
+      }
+
+      const client = document.getElementById('f_client').value.trim();
+      const phone = document.getElementById('f_phone').value.trim();
+      const alertDays = parseInt(document.getElementById('f_alertDays').value, 10) || 3;
+      const startDate = document.getElementById('f_startDate').value;
+      const days = parseInt(document.getElementById('f_days').value, 10);
+      const totalCost = parseFloat(document.getElementById('f_costPrice').value) || 0;
+      const totalSell = parseFloat(document.getElementById('f_sellPrice').value) || 0;
+
+      const panelOrigen = (document.getElementById('f_panelOrigen') ? document.getElementById('f_panelOrigen').value.trim() : '') || 'Stock Directo';
+      const modalidad = (document.getElementById('f_modalidad') ? document.getElementById('f_modalidad').value : 'perfiles');
+      const numPerfiles = parseInt(document.getElementById('f_numPerfiles') ? document.getElementById('f_numPerfiles').value : 5, 10) || 1;
+
+      const costPerUnit = totalCost / rows.length;
+      const sellPerUnit = totalSell / rows.length;
+
+      try {
+        const userAccountsRef = db.collection("users").doc(currentUser.uid).collection("accounts");
+
+        if (editId) {
+          const row = rows[0];
+          await userAccountsRef.doc(editId).update({
+            service: row.querySelector('.f_service').value,
+            client: client,
+            phone: phone,
+            alertDays: alertDays,
+            user: row.querySelector('.f_user').value.trim(),
+            pass: row.querySelector('.f_pass').value.trim(),
+            notes: row.querySelector('.f_notes').value.trim(),
+            startDate: startDate,
+            days: days,
+            costPrice: totalCost,
+            sellPrice: totalSell,
+            panelOrigen: panelOrigen,
+            modalidad: modalidad,
+            numPerfiles: numPerfiles,
+            updatedAt: Date.now()
+          });
+          showToast("Registro actualizado");
+        } else {
+          const batch = db.batch();
+          const ahora = Date.now();
+
+          rows.forEach(function(row) {
+            const docRef = userAccountsRef.doc();
+            batch.set(docRef, {
+              service: row.querySelector('.f_service').value,
+              client: client,
+              phone: phone,
+              alertDays: alertDays,
+              user: row.querySelector('.f_user').value.trim(),
+              pass: row.querySelector('.f_pass').value.trim(),
+              notes: row.querySelector('.f_notes').value.trim(),
+              startDate: startDate,
+              days: days,
+              costPrice: costPerUnit,
+              sellPrice: sellPerUnit,
+              panelOrigen: panelOrigen,
+              modalidad: modalidad,
+              numPerfiles: numPerfiles,
+              createdAt: ahora,
+              updatedAt: ahora
+            });
+          });
+
+          await batch.commit();
+          showToast('¡Venta guardada exitosamente!');
+        }
+
+        cancelEdit();
+        switchMainTab('tab-cuentas');
+      } catch (err) {
+        showToast("Error al guardar: " + err.message);
+      }
+    }
+
+    async function deleteAccount(docId) {
+      if (!confirm("¿Deseas eliminar este registro de manera definitiva?")) return;
+      try {
+        await db.collection("users").doc(currentUser.uid).collection("accounts").doc(docId).delete();
+        showToast("Registro eliminado");
+      } catch (err) {
+        showToast("Error: " + err.message);
+      }
+    }
+
+    async function renewDays(docId, extraDays) {
+      const acc = accounts.find(function(a) { return a.id === docId; });
+      if (!acc) return;
+      try {
+        await db.collection("users").doc(currentUser.uid).collection("accounts").doc(docId).update({
+          days: parseInt(acc.days, 10) + extraDays
+        });
+        showToast('Plazo extendido: +' + extraDays + ' días');
+      } catch (err) {
+        showToast("Error: " + err.message);
+      }
+    }
+
+    function updateDashboard() {
+      renderPlatformCarousel();
+      renderAccounts();
+      renderReports();
+      updateBadges();
+    }
+
+    function addDaysToDate(dateStr, days) {
+      const parts = dateStr.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      d.setDate(d.getDate() + parseInt(days, 10));
+      return d;
+    }
+
+    function formatDateDisplay(d) {
+      return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    }
+
+    function calculateStatus(startDateStr, totalDays, customAlertDays) {
+      const parts = startDateStr.split('-');
+      const start = new Date(parts[0], parts[1] - 1, parts[2]);
+      const end = addDaysToDate(startDateStr, totalDays);
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      const remainingDays = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      let status = 'active';
+      let label = 'Activa (' + remainingDays + 'd)';
+
+      const alertThreshold = customAlertDays || 3;
+      if (remainingDays < 0) {
+        status = 'expired';
+        label = 'Vencida (' + Math.abs(remainingDays) + 'd)';
+      } else if (remainingDays === 0) {
+        status = 'warning';
+        label = 'Vence Hoy';
+      } else if (remainingDays <= alertThreshold) {
+        status = 'warning';
+        label = 'Por Vencer (' + remainingDays + 'd)';
+      }
+
+      const elapsed = totalDays - remainingDays;
+      const progressPercent = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
+
+      return { remainingDays: remainingDays, startDateFormatted: formatDateDisplay(start), endDateFormatted: formatDateDisplay(end), status: status, label: label, progressPercent: progressPercent };
+    }
+
+    function calculateExpiryPreview() {
+      const dateVal = document.getElementById('f_startDate').value;
+      const daysVal = parseInt(document.getElementById('f_days').value, 10);
+      const previewEl = document.getElementById('expiryPreviewText');
+      if (!dateVal || isNaN(daysVal) || daysVal <= 0) {
+        previewEl.innerHTML = '--/--/----';
+        return;
+      }
+      previewEl.innerHTML = formatDateDisplay(addDaysToDate(dateVal, daysVal)) + ' (' + daysVal + ' días)';
+    }
+
+    function setQuickDays(d) {
+      document.getElementById('f_days').value = d;
+      calculateExpiryPreview();
+    }
+
+    function renderPlatformCarousel() {
+      const carousel = document.getElementById('platformCarousel');
+      if (!carousel) return;
+      const counts = { 'todas': accounts.length };
+
+      accounts.forEach(function(a) {
+        counts[a.service] = (counts[a.service] || 0) + 1;
+      });
+
+      carousel.innerHTML = platforms.map(function(p) {
+        const icon = p === 'todas' ? '📁' : (SERVICE_ICONS[p] || '📺');
+        const name = p === 'todas' ? 'Todas' : p;
+        const count = counts[p] || 0;
+        const isActive = selectedPlatform === p ? 'active' : '';
+
+        return '<button type="button" class="platform-chip ' + isActive + '" onclick="filterByPlatform(\x27' + p + '\x27)">' +
+               '<span>' + icon + ' ' + name + '</span>' +
+               '<span class="badge-counter">' + count + '</span>' +
+               '</button>';
+      }).join('');
+    }
+
+    function filterByPlatform(p) {
+      selectedPlatform = p;
+      renderPlatformCarousel();
+      renderAccounts();
+    }
+
+    function renderAccounts() {
+      const container = document.getElementById('accountsList');
+      const urgentContainer = document.getElementById('urgentAccountsList');
+      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      const itemsHtml = [];
+      const urgentHtml = [];
+
+      accounts.forEach(function(a) {
+        const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+        const icon = SERVICE_ICONS[a.service] || '📺';
+        const cost = a.costPrice || 0;
+        const sell = a.sellPrice || 0;
+        const profit = sell - cost;
+
+        const matchPlatform = (selectedPlatform === 'todas' || a.service === selectedPlatform);
+        const matchSearch = a.client.toLowerCase().includes(search) || 
+                             a.user.toLowerCase().includes(search) || 
+                             a.service.toLowerCase().includes(search) ||
+                             (a.panelOrigen && a.panelOrigen.toLowerCase().includes(search));
+
+        let matchSubFilter = true;
+        if (currentSubFilter === 'activas') matchSubFilter = (calc.status === 'active');
+        if (currentSubFilter === 'vencer') matchSubFilter = (calc.status === 'warning');
+        if (currentSubFilter === 'vencidas') matchSubFilter = (calc.status === 'expired');
+
+        const card = '<div class="account-item">' +
+          '<div class="account-header" onclick="this.parentElement.classList.toggle(\x27open\x27)">' +
+            '<div class="item-left">' +
+              '<div class="service-badge">' + icon + '</div>' +
+              '<div class="item-info">' +
+                '<div class="item-name">' + a.service + (a.panelOrigen ? ' <span class="panel-pill-tag">🏷️ ' + a.panelOrigen + '</span>' : '') + '</div>' +
+                '<div class="item-client">Cliente: ' + a.client + ' · Modalidad: ' + (a.modalidad === 'completa' ? 'Cuenta Completa' : 'Por Perfiles') + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="item-right">' +
+              '<div class="price-tag-preview">$' + sell.toFixed(2) + '</div>' +
+              '<div class="status-pill status-' + calc.status + '">' + calc.label + '</div>' +
+              '<span class="chevron-icon">▼</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="account-body">' +
+            '<div class="creds-grid">' +
+              '<div class="cred-box">' +
+                '<div>' +
+                  '<div class="cred-label">Usuario / Correo</div>' +
+                  '<div class="cred-val">' + a.user + '</div>' +
+                '</div>' +
+                '<button type="button" class="copy-btn" onclick="copyText(\x27' + a.user + '\x27, \x27Usuario\x27)">Copiar</button>' +
+              '</div>' +
+              '<div class="cred-box">' +
+                '<div>' +
+                  '<div class="cred-label">Contraseña</div>' +
+                  '<div class="cred-val">' + a.pass + '</div>' +
+                '</div>' +
+                '<button type="button" class="copy-btn" onclick="copyText(\x27' + a.pass + '\x27, \x27Contraseña\x27)">Copiar</button>' +
+              '</div>' +
+            '</div>' +
+            (a.notes ? '<div class="cred-box" style="margin-bottom:14px;"><div><div class="cred-label">Indicaciones / Perfil</div><div class="cred-val" style="color:var(--primary); font-weight:600;">' + a.notes + '</div></div><button type="button" class="copy-btn" onclick="copyText(\x27' + a.notes + '\x27, \x27Nota\x27)">Copiar</button></div>' : '') +
+            '<div class="finances-row">' +
+              '<div><div class="fin-label">Inversión</div><div class="fin-value" style="color:var(--text-muted);">' + cost.toFixed(2) + '</div></div>' +
+              '<div><div class="fin-label">Precio Venta</div><div class="fin-value">$' + sell.toFixed(2) + '</div></div>' +
+              '<div><div class="fin-label">Ganancia</div><div class="fin-value" style="color:' + (profit >= 0 ? 'var(--primary)' : 'var(--danger-text)') + ';">$' + profit.toFixed(2) + '</div></div>' +
+            '</div>' +
+            '<div class="dates-strip">' +
+              '<span>Inicio: <b>' + calc.startDateFormatted + '</b></span>' +
+              '<span>Vencimiento: <b>' + calc.endDateFormatted + '</b></span>' +
+            '</div>' +
+            '<div class="progress-bar-bg">' +
+              '<div class="progress-bar-fill" style="width:' + calc.progressPercent + '%; background:' + (calc.status === 'warning' ? '#f59e0b' : (calc.status === 'expired' ? '#ef4444' : '#10b981')) + ';"></div>' +
+            '</div>' +
+            '<div class="card-actions">' +
+              '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+                '<button type="button" class="btn-ws" onclick="copyReceipt(\x27' + a.id + '\x27)">📄 Copiar Ficha</button>' +
+                '<button type="button" class="btn-ws" style="background:' + (calc.status === 'warning' || calc.status === 'expired' ? 'var(--primary)' : '#0284c7') + ';" onclick="sendExpiryAlert(\x27' + a.id + '\x27)">📲 Notificar WhatsApp</button>' +
+              '</div>' +
+              '<div class="actions-mini">' +
+                '<button type="button" class="btn-action-icon" title="Extender 30 días" onclick="renewDays(\x27' + a.id + '\x27, 30)">+30d</button>' +
+                '<button type="button" class="btn-action-icon" title="Editar" onclick="startEdit(\x27' + a.id + '\x27)">✏️</button>' +
+                '<button type="button" class="btn-action-icon del" title="Eliminar" onclick="deleteAccount(\x27' + a.id + '\x27)">🗑️</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+        if (matchPlatform && matchSearch && matchSubFilter) itemsHtml.push(card);
+        if (calc.status === 'warning' || calc.status === 'expired') urgentHtml.push(card);
+      });
+
+      container.innerHTML = itemsHtml.length ? itemsHtml.join('') : '<div style="text-align:center; padding:40px; color:#94a3b8; font-size:0.95rem;">No se encontraron registros.</div>';
+      urgentContainer.innerHTML = urgentHtml.length ? urgentHtml.join('') : '<div style="text-align:center; padding:40px; color:var(--success-text); font-weight:600;">✨ No hay servicios próximos a vencer.</div>';
+    }
+
+    function renderReports() {
+      let tCost = 0, tSell = 0, act = 0;
+      const breakdown = {};
+
+      accounts.forEach(function(a) {
+        const cost = a.costPrice || 0;
+        const sell = a.sellPrice || 0;
+        const profit = sell - cost;
+        const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+
+        tCost += cost;
+        tSell += sell;
+        if (calc.status === 'active' || calc.status === 'warning') act++;
+
+        if (!breakdown[a.service]) breakdown[a.service] = { count: 0, cost: 0, sell: 0, profit: 0 };
+        breakdown[a.service].count++;
+        breakdown[a.service].cost += cost;
+        breakdown[a.service].sell += sell;
+        breakdown[a.service].profit += profit;
+      });
+
+      document.getElementById('stat-total-ventas').innerText = '$' + tSell.toFixed(2);
+      document.getElementById('stat-total-compras').innerText = '$' + tCost.toFixed(2);
+      document.getElementById('stat-total-ganancia').innerText = '$' + (tSell - tCost).toFixed(2);
+      document.getElementById('stat-total-activas').innerText = act;
+
+      const tbody = document.getElementById('platformTableBody');
+      tbody.innerHTML = Object.keys(breakdown).map(function(k) {
+        return '<tr>' +
+          '<td>' + (SERVICE_ICONS[k] || '📺') + ' ' + k + '</td>' +
+          '<td>' + breakdown[k].count + '</td>' +
+          '<td style="color:var(--text-muted);">$' + breakdown[k].cost.toFixed(2) + '</td>' +
+          '<td>$' + breakdown[k].sell.toFixed(2) + '</td>' +
+          '<td style="color:' + (breakdown[k].profit >= 0 ? 'var(--primary)' : 'var(--danger-text)') + '; font-weight:700;">$' + breakdown[k].profit.toFixed(2) + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function updateBadges() {
+      let alerts = 0;
+      accounts.forEach(function(a) {
+        const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+        if (calc.status === 'warning' || calc.status === 'expired') alerts++;
+      });
+      document.getElementById('badge-all').innerText = accounts.length;
+      document.getElementById('badge-alerts').innerText = alerts;
+    }
+
+    function startEdit(id) {
+      const a = accounts.find(function(x) { return x.id === id; });
+      if (!a) return;
+
+      document.getElementById('editDocId').value = a.id;
+      document.getElementById('f_client').value = a.client;
+      document.getElementById('f_phone').value = a.phone || '';
+      document.getElementById('f_alertDays').value = a.alertDays || 3;
+      document.getElementById('f_startDate').value = a.startDate;
+      document.getElementById('f_days').value = a.days;
+      document.getElementById('f_costPrice').value = a.costPrice || 0;
+      document.getElementById('f_sellPrice').value = a.sellPrice || 0;
+
+      if (document.getElementById('f_panelOrigen')) document.getElementById('f_panelOrigen').value = a.panelOrigen || '';
+      if (document.getElementById('f_modalidad')) document.getElementById('f_modalidad').value = a.modalidad || 'perfiles';
+      if (document.getElementById('f_numPerfiles')) document.getElementById('f_numPerfiles').value = a.numPerfiles || 5;
+
+      const container = document.getElementById('platformsContainer');
+      container.innerHTML = '';
+      addPlatformRow({
+        service: a.service,
+        user: a.user,
+        pass: a.pass,
+        notes: a.notes
+      });
+
+      document.getElementById('btnAddPlatformRow').style.display = 'none';
+
+      document.getElementById('formHeaderTitle').innerText = '✏️ Editar Suscripción';
+      document.getElementById('formSubmitBtn').innerText = 'Actualizar Datos';
+      document.getElementById('btnCancelEdit').style.display = 'inline-block';
+
+      calcPerfilShare();
+      calculateExpiryPreview();
+      switchMainTab('tab-registrar');
+    }
+
+    function cancelEdit() {
+      document.getElementById('accountForm').reset();
+      document.getElementById('editDocId').value = '';
+      document.getElementById('f_alertDays').value = '3';
+      document.getElementById('formHeaderTitle').innerText = '📝 Registrar Suscripción';
+      document.getElementById('formSubmitBtn').innerText = 'Guardar Registro';
+      document.getElementById('btnCancelEdit').style.display = 'none';
+      document.getElementById('btnAddPlatformRow').style.display = 'inline-flex';
+      document.getElementById('f_startDate').value = new Date().toISOString().split('T')[0];
+
+      const container = document.getElementById('platformsContainer');
+      container.innerHTML = '';
+      addPlatformRow();
+
+      calcPerfilShare();
+      calculateExpiryPreview();
+    }
+
+    function copyText(text, label) {
+      navigator.clipboard.writeText(text).then(function() { showToast(label + ' copiado al portapapeles'); });
+    }
+
+    window.procesarImportacionExcel = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+          if (!jsonData || jsonData.length === 0) {
+            showToast("El archivo Excel está vacío.");
+            return;
+          }
+
+          const normalizar = function(txt) {
+            return String(txt).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+          };
+
+          const aliases = {
+            service: ["servicio", "plataforma", "cuenta", "app", "tipo"],
+            client: ["cliente", "comprador", "nombre", "usuariofinal", "destinatario"],
+            phone: ["whatsapp", "telefono", "celular", "tel", "movil", "contacto"],
+            user: ["correo", "email", "usuario", "user", "cuenta", "login", "mail"],
+            pass: ["contrasena", "password", "pass", "clave", "pin", "contra"],
+            notes: ["notas", "nota", "perfil", "indicaciones", "detalles", "comentarios", "pinperfil"],
+            startDate: ["fechainicio", "inicio", "fecha", "creacion", "desde", "date"],
+            days: ["dias", "diascontratados", "duracion", "periodo", "vigencia"],
+            alertDays: ["anticipaciondealerta", "alerta", "aviso", "anticipacion"],
+            costPrice: ["costo", "inversion", "costodeinversion", "compra", "cost"],
+            sellPrice: ["venta", "precioventa", "precio", "total", "cobro", "price"]
+          };
+
+          const parseNumber = function(val, fallback) {
+            fallback = fallback || 0;
+            if (typeof val === 'number') return val;
+            const str = String(val).replace(/[^0-9.-]/g, '');
+            const parsed = parseFloat(str);
+            return isNaN(parsed) ? fallback : parsed;
+          };
+
+          const parseDate = function(val) {
+            if (val instanceof Date && !isNaN(val)) {
+              return val.toISOString().split('T')[0];
+            }
+            if (typeof val === 'string' && val.trim()) {
+              const clean = val.trim();
+              if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) return clean;
+              const parts = clean.split(/[-/]/);
+              if (parts.length === 3 && parts[2].length === 4) {
+                return parts[2] + '-' + String(parts[1]).padStart(2, '0') + '-' + String(parts[0]).padStart(2, '0');
+              }
+            }
+            return new Date().toISOString().split('T')[0];
+          };
+
+          const mapearServicio = function(nombre) {
+            const n = String(nombre).toLowerCase();
+            if (n.includes("priv")) return "Netflix Priv";
+            if (n.includes("net")) return "Netflix";
+            if (n.includes("hulu")) return "Disney Hulu";
+            if (n.includes("disney") || n.includes("standar")) return "Disney Standar";
+            if (n.includes("max") || n.includes("hbo")) return "Max (HBO)";
+            if (n.includes("prime") || n.includes("video")) return "Prime Video";
+            if (n.includes("spot")) return "Spotify";
+            if (n.includes("invi")) return "YouTube (Invitación)";
+            if (n.includes("fam")) return "YouTube (Familiar)";
+            if (n.includes("you") || n.includes("yt") || n.includes("indiv")) return "YouTube (Individual)";
+            if (n.includes("param")) return "Paramount+";
+            if (n.includes("crunch")) return "Crunchyroll";
+            if (n.includes("vix")) return "ViX";
+            if (n.includes("universal")) return "Universal+";
+            if (n.includes("mubi")) return "MUBI";
+            if (n.includes("fox")) return "FOX ONE";
+            if (n.includes("apple") && n.includes("tv")) return "Apple TV+";
+            if (n.includes("apple") && n.includes("music")) return "Apple Music";
+            if (n.includes("amazon") && n.includes("music")) return "Amazon Music";
+            if (n.includes("deezer")) return "Deezer";
+            if (n.includes("claro")) return "Claro Video";
+            if (n.includes("iptv")) return "IPTV / IPTV Pro";
+            if (n.includes("canva")) return "Canva Edu";
+            if (n.includes("duo")) return "Duolingo";
+            if (n.includes("chat") || n.includes("gpt")) return "ChatGPT";
+            return "Otro";
+          };
+
+          const batchList = [];
+          const ahora = Date.now();
+
+          jsonData.forEach(function(row) {
+            const keys = Object.keys(row);
+            const getVal = function(field) {
+              for (let i = 0; i < keys.length; i++) {
+                const normKey = normalizar(keys[i]);
+                if (aliases[field].includes(normKey)) return row[keys[i]];
+              }
+              return "";
+            };
+
+            const userVal = String(getVal("user") || "").trim();
+            const passVal = String(getVal("pass") || "").trim();
+            const clientVal = String(getVal("client") || "Cliente").trim();
+
+            if (!userVal && !passVal && clientVal === "Cliente") return;
+
+            batchList.push({
+              service: mapearServicio(getVal("service") || "Otro"),
+              client: clientVal,
+              phone: String(getVal("phone") || "").replace(/\D/g, ""),
+              user: userVal,
+              pass: passVal,
+              notes: String(getVal("notes") || "").trim(),
+              startDate: parseDate(getVal("startDate")),
+              days: parseInt(parseNumber(getVal("days"), 30), 10) || 30,
+              alertDays: parseInt(parseNumber(getVal("alertDays"), 3), 10) || 3,
+              costPrice: parseNumber(getVal("costPrice"), 0),
+              sellPrice: parseNumber(getVal("sellPrice"), 0),
+              panelOrigen: "Importado Excel",
+              modalidad: "perfiles",
+              numPerfiles: 5,
+              createdAt: ahora,
+              updatedAt: ahora
+            });
+          });
+
+          if (batchList.length === 0) {
+            showToast("No se encontraron filas válidas en el archivo.");
+            return;
+          }
+
+          showToast('Importando ' + batchList.length + ' cuentas...');
+          const userAccountsRef = db.collection("users").doc(currentUser.uid).collection("accounts");
+          
+          const CHUNK_SIZE = 400;
+          for (let i = 0; i < batchList.length; i += CHUNK_SIZE) {
+            const chunk = batchList.slice(i, i + CHUNK_SIZE);
+            const batch = db.batch();
+            chunk.forEach(function(item) {
+              const docRef = userAccountsRef.doc();
+              batch.set(docRef, item);
+            });
+            await batch.commit();
+          }
+
+          showToast('¡Se importaron ' + batchList.length + ' registros exitosamente!');
+        } catch (err) {
+          console.error("Error importando Excel:", err);
+          showToast("Error al procesar el archivo Excel: " + err.message);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    };
+
+    window.exportToExcel = function() {
+      if (!accounts || accounts.length === 0) {
+        showToast("No existen registros para exportar.");
+        return;
+      }
+
+      const rows = accounts.map(function(a, index) {
+        const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+        const cost = parseFloat(a.costPrice) || 0;
+        const sell = parseFloat(a.sellPrice) || 0;
+        const profit = sell - cost;
+
+        let estadoTexto = "Activa";
+        if (calc.status === 'expired') estadoTexto = "Vencida";
+        else if (calc.status === 'warning') estadoTexto = calc.remainingDays === 0 ? "Vence Hoy" : "Por Vencer";
+
+        return {
+          "N°": index + 1,
+          "Servicio": a.service || "N/A",
+          "Cliente": a.client || "N/A",
+          "WhatsApp": a.phone || "Sin registrar",
+          "Panel": a.panelOrigen || "-",
+          "Modalidad": a.modalidad || "perfiles",
+          "Usuario / Correo": a.user || "N/A",
+          "Contraseña": a.pass || "N/A",
+          "Notas / PIN": a.notes || "-",
+          "Fecha Inicio": calc.startDateFormatted,
+          "Días Contratados": a.days || 30,
+          "Fecha Vencimiento": calc.endDateFormatted,
+          "Días Restantes": calc.remainingDays,
+          "Estado": estadoTexto,
+          "Inversión ($)": cost,
+          "Venta ($)": sell,
+          "Ganancia ($)": profit
+        };
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+
+      const colWidths = [
+        { wch: 6 },  { wch: 18 }, { wch: 22 }, { wch: 16 }, { wch: 16 }, { wch: 14 },
+        { wch: 28 }, { wch: 18 }, { wch: 20 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, 
+        { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }
+      ];
+      worksheet['!cols'] = colWidths;
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Suscripciones");
+
+      const fechaHoy = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(workbook, 'Cherry_Streaming_Reporte_' + fechaHoy + '.xlsx');
+      showToast("Archivo Excel descargado con éxito");
+    };
+
+    window.sendExpiryAlert = function(id) {
+      const a = accounts.find(function(x) { return x.id === id; });
+      if (!a) return;
+      const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+      let alertMsg = "";
+
+      if (calc.remainingDays > 0) {
+        alertMsg = '*Aviso de Vencimiento - Cherry Streaming MX*\n\nHola *' + a.client + '*, esperamos te encuentres bien.\n\nTe informamos que tu suscripción a *' + a.service + '* está próxima a vencer:\n\n📅 Fecha de vencimiento: *' + calc.endDateFormatted + '*\n⏳ Días restantes: *' + calc.remainingDays + ' día(s)*\n\n¿Deseas realizar la renovación para conservar tu servicio sin interrupciones?';
+      } else if (calc.remainingDays === 0) {
+        alertMsg = '*Aviso Urgente - Cherry Streaming MX*\n\nHola *' + a.client + '*, tu servicio de *' + a.service + '* *VENCE HOY* (' + calc.endDateFormatted + ').\n\nPor favor confírmanos si deseas renovar para mantener tus accesos activos.';
+      } else {
+        alertMsg = '*Aviso de Expiración - Cherry Streaming MX*\n\nHola *' + a.client + '*, tu suscripción a *' + a.service + '* expiró el *' + calc.endDateFormatted + '*.\n\nSi deseas reactivarla o solicitar una nueva cuenta, quedamos a tu completa disposición.';
+      }
+
+      if (a.phone) {
+        let cleanPhone = a.phone.replace(/\D/g, '');
+        if (cleanPhone.length === 10) cleanPhone = '52' + cleanPhone;
+        const url = 'https://wa.me/' + cleanPhone + '?text=' + encodeURIComponent(alertMsg);
+        window.open(url, '_blank');
+      } else {
+        navigator.clipboard.writeText(alertMsg).then(function() {
+          showToast("Mensaje copiado al portapapeles");
+        });
+      }
+    };
+
+    window.copyReceipt = function(id) {
+      const a = accounts.find(function(x) { return x.id === id; });
+      if (!a) return;
+      const calc = calculateStatus(a.startDate, a.days, a.alertDays);
+      const msg = '*COMPROBANTE DE SERVICIO - Cherry Streaming MX*\n\nServicio: ' + a.service + '\nCliente: ' + a.client + '\n' + (a.panelOrigen ? 'Panel: ' + a.panelOrigen + '\n' : '') + 'Usuario: ' + a.user + '\nContraseña: ' + a.pass + '\n' + (a.notes ? 'Detalles: ' + a.notes + '\n' : '') + 'Inicio: ' + calc.startDateFormatted + '\nVencimiento: ' + calc.endDateFormatted + '\nTotal: $' + (a.sellPrice || 0).toFixed(2);
+      navigator.clipboard.writeText(msg).then(function() { showToast('Comprobante copiado'); });
+    };
+
+    function switchMainTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+      const target = document.getElementById(id);
+      if (target) target.classList.add('active');
+      const b = Array.from(document.querySelectorAll('.tab-btn')).find(function(el) { return el.getAttribute('onclick') && el.getAttribute('onclick').includes(id); });
+      if (b) b.classList.add('active');
+    }
+
+    function setSubFilter(f, el) {
+      currentSubFilter = f;
+      document.querySelectorAll('.sub-filter-btn').forEach(function(btn) { btn.classList.remove('active'); });
+      el.classList.add('active');
+      renderAccounts();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.innerHTML = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2600);
+    }
+
+    const startEl = document.getElementById('f_startDate');
+    if (startEl) startEl.value = new Date().toISOString().split('T')[0];
+    calculateExpiryPreview();
+    calcPerfilShare();
+  </script>
+</body>
+</html>

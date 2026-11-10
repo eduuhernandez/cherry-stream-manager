@@ -1284,6 +1284,41 @@
   }
 </style>
 
+
+
+
+<style id="cherry-bar-fix">
+  /* Flexbox flexible para la barra de usuario */
+  .auth-bar, .user-bar, [class*="user-balance"], [class*="header-right"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+  }
+  .auth-btn-secondary {
+    margin-left: 6px !important;
+    white-space: nowrap !important;
+  }
+</style>
+
+
+
+<style id="cherry-barra-final">
+  #authUserView {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+    padding-right: 20px !important;
+  }
+  #authUserView > * {
+    flex-shrink: 0 !important;
+  }
+  .auth-btn-secondary {
+    margin-left: 4px !important;
+    margin-right: 10px !important;
+  }
+</style>
 </head>
 <body>
 
@@ -1293,13 +1328,21 @@
       <button class="auth-btn-secondary" onclick="openAuthModal('login')">🔑 Iniciar Sesión</button>
       <button class="auth-btn-action" onclick="openAuthModal('register')">✨ Registrarse</button>
     </div>
-    <div id="authUserView" style="display: none; gap: 12px; align-items: center;">
-      <span id="authUsernameDisplay" style="font-weight:600;">👤 Usuario</span>
-      <span class="user-balance-pill">💰 Saldo: $<span id="authBalanceDisplay">0.00</span> MXN</span>
-            <button type="button" id="btnRecargarHeaderRight" onclick="abrirRecargaCherry()" class="auth-btn-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 4px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; box-shadow: 0 2px 6px rgba(16,185,129,0.35); margin-left: 6px; margin-right: 6px;">⚡ Recargar</button>
-            
-      <button class="auth-btn-action" style="padding:4px 10px; font-size:0.82rem; display:flex; align-items:center; gap:4px;" onclick="openMyAccountsModal()">🍿 Mis Cuentas</button>
-      <button class="auth-btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="logoutCustomer()">🚪 Salir</button>
+        <div id="authUserView" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; padding-right:32px;">
+      <span id="authUsernameDisplay" style="font-weight:600; font-size:0.85rem; white-space:nowrap;">👤 Usuario</span>
+      <span class="user-balance-pill" style="white-space:nowrap; font-size:0.8rem;">💰 Saldo: $<span id="authBalanceDisplay">0.00</span> MXN</span>
+      <button type="button" id="btnRecargarHeaderRight" onclick="abrirRecargaCherry()" class="auth-btn-action" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 4px 9px; font-size: 0.8rem; font-weight: 700; border-radius: 9999px; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; white-space:nowrap;">⚡ Recargar</button>
+      <button class="auth-btn-action" style="padding:4px 9px; font-size:0.8rem; display:inline-flex; align-items:center; gap:3px; white-space:nowrap;" onclick="openMyAccountsModal()">🍿 Mis Cuentas</button>
+      <button class="auth-btn-action" style="padding:4px 9px; font-size:0.8rem; background:#8b5cf6; color:#fff; border:none; border-radius:9999px; display:inline-flex; align-items:center; gap:3px; cursor:pointer;" onclick="openCuponeraModal()">🎟️ Cuponera</button>
+      <a href="gestor.html" id="btnHeaderGestor" style="text-decoration:none; background:#2563eb; color:#fff; border:none; padding:4px 9px; font-size:0.8rem; font-weight:700; border-radius:9999px; display:inline-flex; align-items:center; gap:3px; margin:0 3px; cursor:pointer; flex-shrink:0;">📋 Gestor</a>
+      <a href="admin.html" id="btnHeaderAdminGear" title="Panel de Configuración y Precios" style="text-decoration:none; background:#be123c; color:#fff; border:none; padding:4px 8px; font-size:0.85rem; font-weight:bold; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; margin:0 5px 0 3px; cursor:pointer; flex-shrink:0;">⚙️</a>
+      
+      
+      
+         
+      
+      
+      <button class="auth-btn-secondary" style="padding:4px 10px; font-size:0.8rem; margin-right:12px; flex-shrink:0;" onclick="logoutCustomer()">🚪 Salir</button>
     </div>
   </div>
 
@@ -1357,11 +1400,7 @@
       
     </div>
 
-  <div style="display:flex; justify-content:center; width:100%; margin-top:8px; margin-bottom:6px;">
-    <a id="btnGestorHeader" href="admin.html" style="display:inline-flex; align-items:center; gap:6px; background:#ffffff; color:#64748b; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:20px; border:1px solid #e2e8f0; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s ease;">
-      ⚙️ Panel Gestor
-    </a>
-  </div>
+  
 
   
       <div class="brand-hero">
@@ -2030,7 +2069,7 @@ function sendCartWhatsApp() {
       <div id="deliveryDetailsContainer"></div>
 
       <div style="display:flex; gap:10px; margin-top:16px;">
-        <button id="btnCopyCreds" class="auth-btn-secondary" style="flex:1; padding:10px;" onclick="copyDeliveryData()">📋 Copiar Accesos</button>
+        <button id="btnCopyCreds" class="auth-btn-secondary" style="padding:4px 10px; font-size:0.8rem; margin-right:12px; flex-shrink:0;" onclick="copyDeliveryData()">📋 Copiar Accesos</button>
         <button class="auth-btn-action" style="flex:1; padding:10px;" onclick="closeDeliveryModal()">Cerrar</button>
       </div>
     </div>
@@ -2783,5 +2822,108 @@ function sendCartWhatsApp() {
   </script>
 
 <script src="recarga_ia.js"></script>
+
+    
+
+<script id="cherry-hide-admin-clients">
+  function verificarVisibilidadAdmin() {
+    const ADMINS = ["Eduu15", "iolanycastillo27@gmail.com", , "llanelymonarca@gmail.com"];
+    const code = (localStorage.getItem('cherry_user_code') || '').trim();
+    const esAdmin = ADMINS.includes(code);
+
+    const gearBtn = document.getElementById("btnHeaderAdminGear");
+    const gestorBtn = document.getElementById("btnHeaderGestor");
+
+    if (gearBtn) gearBtn.style.display = esAdmin ? "inline-flex" : "none";
+    if (gestorBtn) gestorBtn.style.display = esAdmin ? "inline-flex" : "none";
+  }
+
+  document.addEventListener("DOMContentLoaded", verificarVisibilidadAdmin);
+  window.addEventListener("storage", verificarVisibilidadAdmin);
+  setInterval(verificarVisibilidadAdmin, 1000);
+</script>
+
+
+
+<!-- MODAL DE CUPONERA VIP -->
+<div id="cuponeraModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.75); z-index:999999; align-items:center; justify-content:center; padding:15px; box-sizing:border-box;">
+  <div style="background:#1e293b; color:#f8fafc; border-radius:18px; max-width:430px; width:100%; padding:24px; box-shadow:0 20px 45px rgba(0,0,0,0.5); border:1px solid #334155; position:relative; text-align:center; box-sizing:border-box; font-family:inherit;">
+    <button type="button" onclick="window.closeCuponeraModal()" style="position:absolute; top:12px; right:12px; background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer; line-height:1;">&times;</button>
+    <div style="font-size:2.6rem; margin-bottom:6px;">🎟️</div>
+    <h3 style="margin:0 0 6px 0; color:#fff; font-size:1.25rem; font-weight:700;">Cuponera VIP de Fidelidad</h3>
+    <p style="margin:0 0 16px 0; font-size:0.83rem; color:#94a3b8; line-height:1.4;">Descuento exclusivo de <strong>$20 MXN</strong> para clientes frecuentes con 10 o más compras.</p>
+    <div id="cuponeraStatusContainer" style="background:#0f172a; padding:16px; border-radius:12px; border:1px solid #334155; margin-bottom:18px; min-height:85px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+      <div style="color:#94a3b8; font-size:0.85rem;">Consultando tu historial de compras...</div>
+    </div>
+    <button type="button" onclick="window.closeCuponeraModal()" style="background:#8b5cf6; color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.9rem; width:100%;">Entendido</button>
+  </div>
+</div>
+
+<script>
+  window.openCuponeraModal = async function() {
+    var modal = document.getElementById("cuponeraModal");
+    if (modal) {
+      modal.style.display = "flex";
+    }
+    var container = document.getElementById("cuponeraStatusContainer");
+    if (!container) return;
+
+    var savedCode = localStorage.getItem('cherry_user_code') || '';
+    var cliente = (typeof currentCustomer !== 'undefined' && currentCustomer) ? currentCustomer : null;
+
+    if (!cliente && !savedCode) {
+      container.innerHTML = '<div style="color:#fbbf24; font-size:0.88rem; font-weight:600;">⚠️ Inicia sesión con tu cuenta de cliente para consultar tus compras acumuladas.</div>';
+      return;
+    }
+
+    container.innerHTML = '<div style="color:#94a3b8; font-size:0.85rem;">Analizando compras realizadas...</div>';
+
+    var totalCompras = 0;
+    try {
+      var firestore = window.db || (typeof firebase !== "undefined" && firebase.apps && firebase.apps.length ? firebase.firestore() : null);
+      if (firestore) {
+        var userCode = cliente ? (cliente.customerCode || cliente.id || savedCode) : savedCode;
+        var cleanPhone = cliente && cliente.phone ? String(cliente.phone).replace(/\D/g, '').slice(-10) : '';
+
+        var promesas = [firestore.collection('inventory').where('assignedUser', '==', userCode).get()];
+        if (cleanPhone) {
+          promesas.push(firestore.collection('inventory').where('assignedTo', '==', cleanPhone).get());
+        }
+
+        var resultados = await Promise.all(promesas);
+        var idsUnicos = new Set();
+        resultados.forEach(function(snap) {
+          snap.forEach(function(doc) {
+            idsUnicos.add(doc.id);
+          });
+        });
+        totalCompras = idsUnicos.size;
+      }
+    } catch (err) {
+      console.warn("Error consultando compras:", err);
+    }
+
+    if (totalCompras >= 10) {
+      container.innerHTML = '<div style="font-size:1.05rem; font-weight:bold; color:#4ade80; margin-bottom:6px;">🎉 ¡CUPÓN VIP DESBLOQUEADO!</div>' +
+        '<div style="background:#166534; color:#dcfce7; padding:6px 14px; border-radius:8px; font-size:0.95rem; font-weight:bold; display:inline-block; margin-bottom:8px;">DESCUENTO: -$20.00 MXN</div>' +
+        '<p style="margin:0; font-size:0.82rem; color:#cbd5e1;">Tienes <strong>' + totalCompras + ' compras</strong> registradas. Tu descuento de $20 MXN se calculará automáticamente en tus pedidos.</p>';
+    } else {
+      var faltan = 10 - totalCompras;
+      var pct = Math.min(100, Math.round((totalCompras / 10) * 100));
+      var palabraCompras = faltan > 1 ? 'compras' : 'compra';
+      container.innerHTML = '<div style="font-size:0.95rem; font-weight:600; color:#f8fafc; margin-bottom:8px;">Llevas <strong>' + totalCompras + ' de 10</strong> compras</div>' +
+        '<div style="background:#334155; border-radius:9999px; height:10px; width:100%; overflow:hidden; margin-bottom:10px;">' +
+        '<div style="background:#8b5cf6; height:100%; width:' + pct + '%; border-radius:9999px;"></div>' +
+        '</div>' +
+        '<p style="margin:0; font-size:0.82rem; color:#94a3b8;">¡Te faltan solo <strong>' + faltan + ' ' + palabraCompras + '</strong> para desbloquear tu descuento permanente de $20 MXN!</p>';
+    }
+  };
+
+  window.closeCuponeraModal = function() {
+    var modal = document.getElementById("cuponeraModal");
+    if (modal) modal.style.display = "none";
+  };
+</script>
 </body>
 </html>
+

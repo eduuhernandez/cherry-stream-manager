@@ -1,0 +1,13 @@
+﻿🍒🦇 *BIENVENIDO A CHERRY STREAMING MX* 🦇🍒
+_Tu plataforma de entretenimiento digital al mejor precio_
+
+📌 *COMANDOS DISPONIBLES:*
+- *-menu* ➔ Mostrar este menú de ayuda
+- *-catalogo* ➔ Ver la lista completa de servicios y precios
+- *-stock* ➔ Ver cuentas disponibles de entrega inmediata
+- *-saldo* ➔ Consultar tu saldo a favor disponible
+- *-registrar <Usuario>* ➔ Vincular tu cuenta (Ej: -registrar Abcd12)
+- *-comprar <alias>* ➔ Comprar con saldo automático (Ej: -comprar net)
+- *-ayuda* ➔ Contactar con soporte y datos de pago
+
+💡 *Tip:* También puedes ingresar a nuestra tienda web con tu usuario para comprar directamente con tu saldo.

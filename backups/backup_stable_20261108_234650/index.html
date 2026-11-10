@@ -1,0 +1,2483 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cherry Streaming MX 🍒 - Tienda Oficial</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #be123c;
+      --primary-dark: #881337;
+      --primary-light: #fff1f2;
+      --primary-border: #fecdd3;
+      --dark-surface: #09090b;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 25px -5px rgba(190, 18, 60, 0.08);
+      --shadow-lg: 0 20px 35px -5px rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #fff5f7 0%, #f8fafc 55%, #f1f5f9 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* HEADER & BANNER */
+    header {
+      padding: 32px 0 20px 0;
+      text-align: center;
+    }
+
+    .brand-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #ffffff;
+      padding: 10px 22px;
+      border-radius: 999px;
+      border: 1px solid var(--primary-border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .brand-logo {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .brand-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .hero-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 500;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+    }
+
+    .device-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      background: #e2e8f0;
+      color: #475569;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* CONTROLES: BUSCADOR & FILTROS */
+    .controls-panel {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 28px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 12px 16px 12px 42px;
+      font-size: 0.98rem;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.12);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      color: #94a3b8;
+    }
+
+    .filters-wrapper {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .filters-wrapper::-webkit-scrollbar { display: none; }
+
+    .filter-chip {
+      background: #f1f5f9;
+      border: 1px solid transparent;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 8px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+
+    .filter-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(190, 18, 60, 0.3);
+    }
+
+    /* GRID DE PRODUCTOS */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .card-item:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .service-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .service-meta {
+      min-width: 0;
+    }
+
+    .service-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 2px;
+    }
+
+    .service-category {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.4px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-color);
+      margin-bottom: 14px;
+    }
+
+    .price-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .price-amount {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .price-amount span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .btn-buy-now {
+      background: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #db2777 100%);
+      color: #ffffff;
+      border: 1px solid #fbcfe8;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-buy-now:hover {
+      background: linear-gradient(135deg, #fb7185 0%, #f43f5e 50%, #e11d48 100%);
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-buy-now:active {
+      transform: scale(0.98);
+    }
+
+    .btn-add-cart {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 10px 13px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-add-cart:hover {
+      background: #e2e8f0;
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    /* CARRITO FLOTANTE */
+    #cartBar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      width: calc(100% - 32px);
+      max-width: 580px;
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #cartBar.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-count {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .cart-total {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #f43f5e;
+    }
+
+    .cart-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-checkout {
+      background: #22c55e;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-clear-cart {
+      background: rgba(255, 255, 255, 0.12);
+      border: none;
+      color: #cbd5e1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* MODAL CARRITO DETALLES */
+    .cart-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .cart-drawer-overlay.active {
+      display: flex;
+    }
+
+    .cart-drawer {
+      background: #ffffff;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .drawer-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .drawer-close {
+      background: #f1f5f9;
+      border: none;
+      font-size: 1.2rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .drawer-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cart-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px 16px 12px 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      margin-top: 50px;
+    }
+
+    footer a.admin-lock {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 8px;
+      transition: color 0.2s;
+    }
+
+    footer a.admin-lock:hover {
+      color: var(--primary);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 1.7rem; }
+      .products-grid { grid-template-columns: 1fr; }
+      .controls-panel { top: 8px; padding: 12px; }
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js">
+  // CONFIGURACIÓN DE FIREBASE PARA REGISTRO DE ÓRDENES
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpL93xKbUc1ez7dR1ko_mgjCTcOzMtOsw",
+    authDomain: "cherry-streaming-mx.firebaseapp.com",
+    projectId: "cherry-streaming-mx",
+    storageBucket: "cherry-streaming-mx.firebasestorage.app",
+    messagingSenderId: "836275445121",
+    appId: "1:836275445121:web:52715ded272c2d7a911c80"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  window.db = firebase.firestore(); const db = window.db;
+
+  let pendingOrderItems = [];
+  let pendingOrderTotal = 0;
+
+  function openCustomerModal(items, total) {
+    pendingOrderItems = items;
+    pendingOrderTotal = total;
+    
+    // Cargar si ya había guardado en localStorage
+    const savedName = localStorage.getItem('cherry_cust_name') || '';
+    const savedPhone = localStorage.getItem('cherry_cust_phone') || '';
+    const nameInput = document.getElementById('custNameInput');
+    const phoneInput = document.getElementById('custPhoneInput');
+    if (nameInput) nameInput.value = savedName;
+    if (phoneInput) phoneInput.value = savedPhone;
+
+    document.getElementById('customerModal').classList.add('active');
+  }
+
+  function closeCustomerModal() {
+    document.getElementById('customerModal').classList.remove('active');
+  }
+
+  // Interceptar compras individuales
+  window.buySingleProduct = function(productId) {
+    const p = PRODUCTS.find(x => x.id === productId);
+    if (!p) return;
+    openCustomerModal([p], p.price);
+  };
+
+  // Interceptar compras por carrito
+  window.sendCartWhatsApp = function() {
+    if (cart.length === 0) return;
+    const total = cart.reduce((acc, p) => acc + p.price, 0);
+    closeCartDrawer();
+    openCustomerModal([...cart], total);
+  };
+
+  // Guardar en Firestore y redireccionar a WhatsApp
+  window.processOrderToFirestoreAndWhatsApp = async function() {
+    const name = document.getElementById('custNameInput').value.trim();
+    const phoneRaw = document.getElementById('custPhoneInput').value.trim();
+    const cleanPhone = phoneRaw.replace(/\D/g, '');
+
+    if (!name) {
+      alert("Por favor ingresa tu nombre.");
+      return;
+    }
+    if (cleanPhone.length < 10) {
+      alert("Por favor ingresa un número de WhatsApp válido de 10 dígitos.");
+      return;
+    }
+
+    const btn = document.getElementById('btnConfirmOrderWithBot');
+    btn.disabled = true;
+    btn.innerText = "Registrando pedido...";
+
+    // Guardar para siguientes compras
+    localStorage.setItem('cherry_cust_name', name);
+    localStorage.setItem('cherry_cust_phone', cleanPhone);
+
+    const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+    const ahora = Date.now();
+
+    const orderPayload = {
+      orderId: orderId,
+      customerName: name,
+      customerPhone: cleanPhone,
+      items: pendingOrderItems.map(it => ({ id: it.id, name: it.name, plan: it.plan, price: it.price })),
+      total: pendingOrderTotal,
+      status: "pending_payment", // pending_payment -> paid -> delivered
+      createdAt: ahora,
+      source: "tienda_web"
+    };
+
+    try {
+      // 1. Guardar orden en colección 'orders' para el bot
+      await window.db.collection("orders").doc(orderId).set(orderPayload);
+
+      // 2. Registrar o actualizar cliente en 'customers'
+      await window.db.collection("customers").doc(cleanPhone).set({
+        name: name,
+        phone: cleanPhone,
+        lastOrderAt: ahora,
+        lastOrderId: orderId
+      }, { merge: true });
+
+    } catch (err) {
+      console.warn("No se pudo sincronizar orden a Firestore:", err);
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Confirmar Compra en Línea ⚡";
+      closeCustomerModal();
+    }
+
+    // Armar mensaje formal con ID de orden para el bot de WhatsApp
+    let listDetails = "";
+    pendingOrderItems.forEach((p, i) => {
+      listDetails += (i + 1) + ". *" + p.name + "* (" + p.plan + ") - $" + p.price + " MXN\n";
+    });
+
+    const msg = "¡Hola *Cherry Streaming MX*! 🍒🦇\n\n" +
+      "📌 *Folio de Pedido:* #" + orderId + "\n" +
+      "👤 *Cliente:* " + name + "\n" +
+      " *WhatsApp:* " + cleanPhone + "\n\n" +
+      "🛒 *Servicios Solicitados:*\n" + listDetails + "\n" +
+      "💵 *TOTAL A PAGAR:* $" + pendingOrderTotal + " MXN\n\n" +
+      "¿Me compartes tus datos bancarios para realizar la transferencia?";
+
+    const baseUrl = getWhatsAppBaseUrl();
+    const finalPhone = cleanPhone.length === 10 ? ("52" + cleanPhone) : cleanPhone;
+    const finalUrl = baseUrl === "https://wa.me/"
+      ? baseUrl + WHATSAPP_PHONE + "?text=" + encodeURIComponent(msg)
+      : baseUrl + WHATSAPP_PHONE + "&text=" + encodeURIComponent(msg);
+
+    clearCart();
+    window.open(finalUrl, '_blank');
+  };
+
+
+  function isInvitationProduct(p) {
+    const n = (p.name || "").toLowerCase();
+    const pl = (p.plan || "").toLowerCase();
+    return n.includes("youtube") || n.includes("canva") || n.includes("duolingo") || n.includes("chatgpt") || pl.includes("invitación") || pl.includes("invitacion");
+  }
+
+</script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  
+
+<style id="twoColsMobileCSS">
+  /* Disposicion de 2 tarjetas por fila en telefonos / pantallas chicas */
+  @media (max-width: 640px) {
+    #productsGrid, .products-grid, .grid-container, main .grid {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+      padding: 0 10px 24px 10px !important;
+    }
+
+    /* Reducir acolchados internos de las tarjetas */
+    .product-card, .card {
+      padding: 12px 10px !important;
+      border-radius: 14px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+    }
+
+    /* Logo y titulos compactos */
+    .service-icon {
+      width: 38px !important;
+      height: 38px !important;
+      border-radius: 10px !important;
+    }
+    .service-title, .product-card h3, .card h3 {
+      font-size: 0.88rem !important;
+      line-height: 1.15 !important;
+    }
+    .service-plan, .product-card p {
+      font-size: 0.72rem !important;
+      margin-top: 2px !important;
+    }
+
+    /* Precio y botones de accion */
+    .price-value, .product-card .price {
+      font-size: 1.05rem !important;
+    }
+    .card-actions, .actions-row {
+      display: flex !important;
+      gap: 6px !important;
+      margin-top: 8px !important;
+    }
+    .btn-buy, .btn-primary, button[onclick*="buyNow"] {
+      padding: 8px 6px !important;
+      font-size: 0.75rem !important;
+      border-radius: 8px !important;
+      flex: 1 !important;
+      text-align: center !important;
+    }
+    .btn-add-cart, button[onclick*="addToCart"] {
+      padding: 8px 10px !important;
+      font-size: 0.85rem !important;
+      border-radius: 8px !important;
+    }
+  }
+</style>
+
+
+<style id="mobileOptimizationCSS">
+  /* Header limpio y alineado */
+  .header-container, header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+  
+  /* Ajuste de título e insignia */
+  .brand-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    position: static !important;
+  }
+
+  .admin-link-btn {
+    position: static !important;
+    font-size: 0.78rem !important;
+    padding: 6px 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Barra de categorias deslizable suavemente en celular */
+  .categories-wrapper, .categories-container, .cats-scroll {
+    display: flex !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    padding: 8px 4px 12px 4px !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .categories-wrapper::-webkit-scrollbar, .categories-container::-webkit-scrollbar, .cats-scroll::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .cat-pill {
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+    white-space: nowrap !important;
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.55rem !important;
+      line-height: 1.25 !important;
+      margin-top: 10px !important;
+      margin-bottom: 8px !important;
+      padding: 0 10px !important;
+    }
+    .hero-subtitle, p.subtitle {
+      font-size: 0.85rem !important;
+      padding: 0 15px !important;
+      margin-bottom: 16px !important;
+    }
+    .search-box-wrapper, .search-container {
+      margin: 0 12px 14px 12px !important;
+    }
+  }
+</style>
+
+
+<style id="strictCenteringCSS">
+  html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  *, *:before, *:after {
+    box-sizing: border-box !important;
+  }
+
+  /* Centrado vertical limpio del encabezado */
+  header, .header-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 16px 12px 8px 12px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+
+  /* Botón gestor discreto en la esquina superior */
+  .admin-link-btn, a[href*="admin.html"], button[onclick*="admin"] {
+    position: absolute !important;
+    top: 12px !important;
+    right: 14px !important;
+    font-size: 0.72rem !important;
+    padding: 5px 10px !important;
+    border-radius: 20px !important;
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    text-decoration: none !important;
+    border: 1px solid #e2e8f0 !important;
+    z-index: 50 !important;
+  }
+
+  /* Logo de Cherry centrado */
+  .brand-badge, .logo-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 6px auto !important;
+    max-width: 90% !important;
+  }
+
+  /* Textos principales perfectamente centrados */
+  .hero-section, .hero, main {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    text-align: center !important;
+    padding: 0 10px !important;
+  }
+
+  h1 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+    margin: 10px auto 6px auto !important;
+    width: 100% !important;
+    padding: 0 8px !important;
+  }
+
+  p.subtitle, .hero-subtitle, p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 95% !important;
+  }
+
+  /* Buscador centrado al ancho de pantalla */
+  .search-container, .search-box-wrapper, #searchContainer {
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 12px auto !important;
+    padding: 0 8px !important;
+  }
+
+  /* Barra de categorias sin desbordar la pantalla global */
+  .categories-wrapper, .categories-container, .cats-scroll, .cat-filters {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+    padding: 8px 12px 14px 12px !important;
+    gap: 8px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Grid exacto de 2 columnas sin desborde */
+  #productsGrid, .products-grid, .grid-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 4px 8px 30px 8px !important;
+    margin: 0 auto !important;
+  }
+
+  .product-card, .card {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+</style>
+
+
+
+
+
+<script>
+  window.STOCK_MAP = {};
+
+  const ALIAS_MAP = {
+    'p1': ['net', 'netflix'],
+    'p2': ['nep', 'netflix priv', 'netflix privado'],
+    'p3': ['dis', 'disney standar', 'disney'],
+    'p4': ['dhu', 'disney hulu'],
+    'p5': ['max', 'hbo', 'max / hbo'],
+    'p6': ['prm', 'prime', 'prime video'],
+    'p7': ['par', 'paramount', 'paramount+'],
+    'p8': ['cru', 'crunchyroll'],
+    'p9': ['vix', 'vix (1 mes)']
+  };
+
+  
+  // Mapeo de IDs de productos en index.html con los alias de la bóveda
+  window.PRODUCT_TO_ALIAS = {
+    'p1': 'net',
+    'p2': 'nep',
+    'p3': 'dis',
+    'p4': 'dhu',
+    'p5': 'max',
+    'p6': 'prm',
+    'p7': 'par',
+    'p8': 'cru',
+    'p9': 'app',
+    'p10': 'uni',
+    'p11': 'fox',
+    'p12': 'vx1',
+    'p13': 'vx2',
+    'p14': 'vx3',
+    'p15': 'vx5',
+    'p16': 'vya',
+    'p17': 'sp1',
+    'p18': 'sp3',
+    'p19': 'sp6',
+    'p20': 'yt1',
+    'p21': 'yti',
+    'p22': 'ytf',
+    'p23': 'ca1',
+    'p24': 'caa',
+    'p25': 'ipt',
+    'p26': 'cla',
+    'p27': 'mub',
+    'p28': 'amu',
+    'p29': 'dzr',
+    'p30': 'azm',
+    'p31': 'gpt',
+    'p32': 'du1',
+    'p33': 'dua',
+    'p34': 'nec',
+    'p35': 'dsc',
+    'p36': 'dhc',
+    'p37': 'prc',
+    'p38': 'mxc',
+    'p39': 'pac',
+    'p40': 'crc',
+    'p41': 'apc',
+    'p42': 'unc',
+    'p43': 'fxc',
+    'p44': 'muc',
+    'p45': 'vxc',
+    'p46': 'vca'
+  };
+
+  async function fetchStoreInventory() {
+    try {
+      window.STOCK_MAP = {};
+
+      // Si Firebase SDK ya está inicializado en la ventana, usar snapshot nativo
+      if (window.db) {
+        const snap = await window.db.collection('inventory').where('status', '==', 'disponible').get();
+        snap.forEach(doc => {
+          const d = doc.data();
+          const al = (d.alias || d.service || '').toLowerCase().trim();
+          if (al) {
+            window.STOCK_MAP[al] = (window.STOCK_MAP[al] || 0) + 1;
+          }
+        });
+      } else {
+        // Fallback API REST
+        const res = await fetch("https://firestore.googleapis.com/v1/projects/cherry-streaming-mx/databases/(default)/documents/inventory");
+        if (!res.ok) return;
+        const data = await res.json();
+        const docs = data.documents || [];
+
+        docs.forEach(doc => {
+          const f = doc.fields || {};
+          const al = (f.alias?.stringValue || f.service?.stringValue || f.servicio?.stringValue || "").toLowerCase().trim();
+          const st = (f.status?.stringValue || f.estado?.stringValue || "").toLowerCase().trim();
+
+          if (st === "disponible" || st === "available") {
+            if (al) {
+              window.STOCK_MAP[al] = (window.STOCK_MAP[al] || 0) + 1;
+            }
+          }
+        });
+      }
+
+      if (typeof renderStore === "function") {
+        renderStore();
+      }
+    } catch (err) {
+      console.warn("Aviso fetchStoreInventory:", err);
+    }
+  }
+
+  // Sobrescribir getProductStock para enlazar ID o Alias directamente
+  window.getProductStock = function(p) {
+    if (!p) return 0;
+    const aliasByPId = window.PRODUCT_TO_ALIAS[p.id] || '';
+    const pId = (p.id || '').toLowerCase();
+    const pName = (p.name || '').toLowerCase();
+
+    // 1. Por mapeo directo de ID (ej: p6 -> prm)
+    if (aliasByPId && window.STOCK_MAP[aliasByPId]) {
+      return window.STOCK_MAP[aliasByPId];
+    }
+
+    // 2. Por coincidencia en STOCK_MAP directa
+    if (window.STOCK_MAP[pId]) return window.STOCK_MAP[pId];
+
+    // 3. Por palabras clave en el nombre
+    for (const [key, qty] of Object.entries(window.STOCK_MAP)) {
+      if (pName.includes(key)) return qty;
+    }
+
+    return 0;
+  };
+
+  // Listener en tiempo real permanente
+  function initLiveStockSync() {
+    if (window.db) {
+      window.db.collection('inventory').where('status', '==', 'disponible')
+        .onSnapshot(snap => {
+          const map = {};
+          snap.forEach(d => {
+            const al = (d.data().alias || '').toLowerCase().trim();
+            if (al) map[al] = (map[al] || 0) + 1;
+          });
+          window.STOCK_MAP = map;
+          if (typeof renderStore === "function") renderStore();
+        }, () => {});
+    } else {
+      setTimeout(initLiveStockSync, 500);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchStoreInventory();
+    initLiveStockSync();
+  });
+
+</script>
+
+
+<style id="cherry-auth-styles">
+  .user-auth-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .user-balance-pill {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #4ade80;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .auth-btn-action {
+    background: #e5383b;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+  }
+  .auth-btn-action:hover {
+    background: #ba181b;
+  }
+  .auth-btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: #f8fafc;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .auth-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+  }
+  .auth-modal-card {
+    background: #1e293b;
+    color: #f8fafc;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .auth-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    background: rgba(0,0,0,0.25);
+    padding: 4px;
+    border-radius: 10px;
+  }
+  .auth-tab-btn {
+    flex: 1;
+    background: transparent;
+    color: #94a3b8;
+    border: none;
+    padding: 8px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .auth-tab-btn.active {
+    background: #e5383b;
+    color: #fff;
+  }
+  .auth-input-group {
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  .auth-input-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-bottom: 4px;
+  }
+  .auth-input-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.95rem;
+  }
+  .auth-input-group input:focus {
+    outline: none;
+    border-color: #e5383b;
+  }
+  .auth-helper {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 4px;
+  }
+</style>
+
+
+  <!-- FIREBASE GLOBAL INIT -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyDpL93xKbUc1ez7dR1ko_mgjCTcOzMtOsw",
+    authDomain: "cherry-streaming-mx.firebaseapp.com",
+    projectId: "cherry-streaming-mx",
+    storageBucket: "cherry-streaming-mx.firebasestorage.app",
+    messagingSenderId: "836275445121",
+    appId: "1:836275445121:web:52715ded272c2d7a911c80"
+  };
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    window.db = firebase.firestore();
+    var db = window.db;
+  </script>
+
+
+<style id="cherry-checkout-styles">
+  .btn-pay-balance {
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.2s;
+  }
+  .btn-pay-balance:hover {
+    background: #15803d;
+  }
+  .btn-pay-disabled {
+    background: #334155;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+  .delivery-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+  }
+  .delivery-card {
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f8fafc;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+  }
+  .delivery-credential-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 14px 0;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+  .credential-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .credential-line:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+</style>
+
+</head>
+<body>
+
+  <div id="userAuthBar" class="user-auth-bar">
+    <div id="authGuestView" style="display: flex; gap: 8px; align-items: center;">
+      <span style="color:#94a3b8; font-size:0.85rem;">¿Tienes saldo?</span>
+      <button class="auth-btn-secondary" onclick="openAuthModal('login')">🔑 Iniciar Sesión</button>
+      <button class="auth-btn-action" onclick="openAuthModal('register')">✨ Registrarse</button>
+    </div>
+    <div id="authUserView" style="display: none; gap: 12px; align-items: center;">
+      <span id="authUsernameDisplay" style="font-weight:600;">👤 Usuario</span>
+      <span class="user-balance-pill">💰 Saldo: $<span id="authBalanceDisplay">0.00</span> MXN</span>
+      <button class="auth-btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="logoutCustomer()">🚪 Salir</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE AUTENTICACION -->
+  <div id="authModalOverlay" class="auth-modal-overlay">
+    <div class="auth-modal-card">
+      <div class="auth-modal-header">
+        <h3 id="authModalTitle" style="margin:0; font-size:1.2rem;">Acceso Cherry Streaming</h3>
+        <button onclick="closeAuthModal()" style="background:none; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tabBtnLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">Ingresar</button>
+        <button id="tabBtnRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+
+      <!-- FORMULARIO LOGIN -->
+      <div id="formLoginView">
+        <div class="auth-input-group">
+          <label>Usuario o Teléfono registrado</label>
+          <input type="text" id="loginUserInput" placeholder="Ej: Abcd12 o 5512345678">
+          <div class="auth-helper">Tu código de usuario de 6 caracteres o WhatsApp.</div>
+        </div>
+        <button class="auth-btn-action" style="width:100%; padding:12px; margin-top:8px;" onclick="handleCustomerLogin()">Entrar a mi Cuenta</button>
+      </div>
+
+      <!-- FORMULARIO REGISTRO -->
+      <div id="formRegisterView" style="display:none;">
+        <div class="auth-input-group">
+          <label>Código de Usuario (6 caracteres exactos)</label>
+          <input type="text" id="regUserInput" placeholder="Ej: Eduu26" maxlength="6">
+          <div class="auth-helper">1 Mayúscula, 3 minúsculas, 2 números (Ej: Abcd12).</div>
+        </div>
+        <div class="auth-input-group">
+          <label>Número de WhatsApp</label>
+          <input type="tel" id="regPhoneInput" placeholder="Ej: 5512345678">
+          <div class="auth-helper">El número con el que escribes a nuestro Bot.</div>
+        </div>
+        <div class="auth-input-group">
+          <label>Correo Electrónico</label>
+          <input type="email" id="regEmailInput" placeholder="tu@correo.com">
+          <div class="auth-helper">Para enviarte invitaciones directas (Canva, Duolingo, etc.).</div>
+        </div>
+        <button class="auth-btn-action" style="width:100%; padding:12px; margin-top:8px;" onclick="handleCustomerRegister()">Crear mi Cuenta</button>
+      </div>
+      <div id="authStatusMsg" style="margin-top:12px; font-size:0.85rem; text-align:center;"></div>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <header>
+
+    <div style="display:flex; justify-content:flex-end; margin-bottom:-20px;">
+      
+    </div>
+
+  <div style="display:flex; justify-content:center; width:100%; margin-top:8px; margin-bottom:6px;">
+    <a id="btnGestorHeader" href="admin.html" style="display:inline-flex; align-items:center; gap:6px; background:#ffffff; color:#64748b; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:20px; border:1px solid #e2e8f0; text-decoration:none; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:all 0.2s ease;">
+      ⚙️ Panel Gestor
+    </a>
+  </div>
+
+  
+      <div class="brand-hero">
+        <span class="brand-logo">🍒</span>
+        <span class="brand-name">CHERRY STREAMING MX</span>
+      </div>
+      <h1 class="hero-title">Entretenimiento & Música <span>al Mejor Precio</span></h1>
+      <p class="hero-sub">Cuentas premium, perfiles privados y membresías con entrega rápida y garantía garantizada.</p>
+      <div class="device-pill" id="deviceBadge"> Detectando dispositivo...</div>
+    </header>
+
+    <!-- PANEL DE CONTROLES -->
+    <div class="controls-panel">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar Netflix, Spotify, ViX, Disney, Max..." oninput="renderStore()">
+      </div>
+
+      <div class="filters-wrapper" cats-scroll>
+        <button type="button" class="filter-chip active" data-cat="todas" onclick="setCategory('todas', this)">✨ Todo</button>
+        <button type="button" class="filter-chip" data-cat="perfiles" onclick="setCategory('perfiles', this)">🕷️ Perfiles</button>
+        <button type="button" class="filter-chip" data-cat="completas" onclick="setCategory('completas', this)">🏚️ Cuentas Completas</button>
+        <button type="button" class="filter-chip" data-cat="musica" onclick="setCategory('musica', this)">🎵 Música</button>
+        <button type="button" class="filter-chip" data-cat="youtube" onclick="setCategory('youtube', this)">▶️ YouTube</button>
+        <button type="button" class="filter-chip" data-cat="productividad" onclick="setCategory('productividad', this)">📚 Productividad</button>
+      
+      </div>
+    </div>
+
+    <!-- LISTADO DE PRODUCTOS -->
+    <main id="productsContainer" class="products-grid"></main>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>🍒 <b>Cherry Streaming MX</b> &bull; Tu entretenimiento sin límites.</p>
+      <p style="margin-top: 6px;">Powered by <b>Eduu Store | Eduu Hernández</b>
+        
+      </p>
+    </footer>
+  </div>
+
+  <!-- BARRA INFERIOR DE PEDIDO / CARRITO -->
+  <div id="cartBar">
+    <div class="cart-summary" onclick="openCartDrawer()" style="cursor:pointer;">
+      <span class="cart-count" id="cartCountLabel">0 seleccionados (Ver detalle)</span>
+      <span class="cart-total" id="cartTotalLabel">$0 MXN</span>
+    </div>
+    <div class="cart-btns">
+      <button type="button" class="btn-clear-cart" onclick="clearCart()">Vaciar</button>
+      <button type="button" class="btn-checkout" onclick="sendCartWhatsApp()">
+        <span>Comprar en línea</span> ⚡
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE DE CARRITO -->
+  <div id="cartDrawer" class="cart-drawer-overlay">
+    <div class="cart-drawer">
+      <div class="drawer-header">
+        <h3 class="drawer-title">🛒 Resumen de tu pedido</h3>
+        <button type="button" class="drawer-close" onclick="closeCartDrawer()">✕</button>
+      </div>
+      <div class="drawer-items" id="drawerItemsList"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-weight:800; font-size:1.15rem;">
+        <span>Total:</span>
+        <span id="drawerTotalText" style="color:var(--primary); font-size:1.3rem;">$0 MXN</span>
+      </div>
+      <button type="button" class="btn-buy-now" style="width:100%; padding:14px; font-size:1rem;" onclick="sendCartWhatsApp()">
+        Confirmar y Enviar a WhatsApp 📲
+      </button>
+    </div>
+  </div>
+
+  <script>
+
+  function getServiceImage(product) {
+    const pId = (product.id || '').toLowerCase();
+    const pName = (product.name || '').toLowerCase();
+    
+    if (pId.includes('netflix') || pName.includes('netflix')) return 'Netflix-Symbol.png';
+    if (pId.includes('disney-hulu') || pName.includes('hulu')) return 'disney hulu.jpeg';
+    if (pId.includes('disney') || pName.includes('disney')) return 'disney-logo.jpg';
+    if (pId.includes('max') || pId.includes('hbo') || pName.includes('max') || pName.includes('hbo')) return 'hbo.png';
+    if (pId.includes('prime') || pName.includes('prime')) return 'prime.jpg';
+    if (pId.includes('vix') || pName.includes('vix')) return 'VixPremium.jpg';
+    if (pId.includes('paramount') || pName.includes('paramount')) return 'paramount.png';
+    if (pId.includes('apple') || pName.includes('apple')) return 'apple.png';
+    if (pId.includes('crunchy') || pName.includes('crunchy')) return 'crunchy.jpg';
+    if (pId.includes('claro') || pName.includes('claro')) return 'claro.jpg';
+    if (pId.includes('universal') || pName.includes('universal')) return 'universal.jpg';
+    if (pId.includes('fox') || pName.includes('fox')) return 'FOXONE.png';
+    if (pId.includes('iptv') || pName.includes('iptv')) return 'iptv.png';
+    if (pId.includes('mubi') || pName.includes('mubi')) return 'mubi.jpg';
+
+    return null;
+  }
+
+    // CONFIGURACIÓN DE CONTACTO
+    const WHATSAPP_PHONE = "639559603306"; // Número directo para recibir pedidos
+
+    // DETECCIÓN DE DISPOSITIVO (PC vs MÓVIL)
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const deviceBadge = document.getElementById('deviceBadge');
+    if (deviceBadge) {
+      deviceBadge.innerText = isMobileDevice ? ' ' : '💻 Navegando desde PC / Computadora';
+    }
+
+    // CATÁLOGO DE PRODUCTOS (STOCK COMPLETO DE CHERRY STREAMING)
+    const PRODUCTS = [
+
+    
+
+      // PERFILES
+      { id: 'p1', name: 'Netflix', cat: 'perfiles', price: 50, icon: '🍿', plan: 'Perfil Individual' },
+      { id: 'p2', name: 'Netflix Priv', cat: 'perfiles', price: 75, icon: '🧙‍♀️', plan: 'Perfil Privado' },
+      { id: 'p3', name: 'Disney Standar', cat: 'perfiles', price: 15, icon: '👻', plan: 'Perfil Individual' },
+      { id: 'p4', name: 'Disney Hulu', cat: 'perfiles', price: 25, icon: '🧌', plan: 'Perfil Individual con Hulu' },
+      { id: 'p5', name: 'Max / HBO', cat: 'perfiles', price: 15, icon: '🩸', plan: 'Perfil Individual' },
+      { id: 'p6', name: 'Prime Video', cat: 'perfiles', price: 15, icon: '🦇', plan: 'Perfil Individual' },
+      { id: 'p7', name: 'Paramount+', cat: 'perfiles', price: 15, icon: '💀', plan: 'Perfil Individual' },
+      { id: 'p8', name: 'Crunchyroll', cat: 'perfiles', price: 20, icon: '🧛', plan: 'Perfil Individual' },
+      { id: 'p9', name: 'ViX (1 mes)', cat: 'perfiles', price: 8, icon: '🎃', plan: 'Perfil 1 Mes' },
+      { id: 'p10', name: 'ViX (2 meses)', cat: 'perfiles', price: 15, icon: '🎃', plan: 'Perfil 2 Meses' },
+      { id: 'p11', name: 'ViX (3 meses)', cat: 'perfiles', price: 15, icon: '🎃', plan: 'Perfil 3 Meses' },
+      { id: 'p12', name: 'ViX (5 meses)', cat: 'perfiles', price: 25, icon: '🎃', plan: 'Perfil 5 Meses' },
+      { id: 'p13', name: 'ViX (12 meses)', cat: 'perfiles', price: 25, icon: '🎃', plan: 'Perfil Anual (12 Meses)' },
+      { id: 'p14', name: 'Universal+', cat: 'perfiles', price: 25, icon: '👻', plan: 'Perfil Individual' },
+      { id: 'p15', name: 'MUBI', cat: 'perfiles', price: 15, icon: '🔮', plan: 'Perfil Cine de Autor' },
+      { id: 'p16', name: 'FOX ONE', cat: 'perfiles', price: 20, icon: '🦊', plan: 'Perfil Individual' },
+      { id: 'p17', name: 'Apple TV+', cat: 'perfiles', price: 20, icon: '🍎', plan: 'Perfil Individual' },
+      { id: 'p18', name: 'Claro Video', cat: 'perfiles', price: 45, icon: '📺', plan: 'Acceso / Perfil' },
+      { id: 'p19', name: 'IPTV / IPTV Pro', cat: 'perfiles', price: 25, icon: '📺', plan: 'Canales en Vivo' },
+
+      // CUENTAS COMPLETAS
+      { id: 'c1', name: 'Netflix Completa', cat: 'completas', price: 200, icon: '❤️', plan: 'Cuenta Completa Familiar' },
+      { id: 'c2', name: 'Disney Hulu Completa', cat: 'completas', price: 70, icon: '💙', plan: 'Cuenta Completa con Hulu' },
+      { id: 'c3', name: 'Disney Standar Completa', cat: 'completas', price: 50, icon: '💙', plan: 'Cuenta Completa Standar' },
+      { id: 'c4', name: 'Max / HBO Completa', cat: 'completas', price: 45, icon: '🖤', plan: 'Cuenta Completa' },
+      { id: 'c5', name: 'Prime Video Completa', cat: 'completas', price: 40, icon: '🩵', plan: 'Cuenta Completa' },
+      { id: 'c6', name: 'Paramount+ Completa', cat: 'completas', price: 45, icon: '💜', plan: 'Cuenta Completa' },
+      { id: 'c7', name: 'Crunchyroll Completa', cat: 'completas', price: 45, icon: '🧡', plan: 'Cuenta Completa Mega Fan' },
+      { id: 'c8', name: 'ViX Completa (1 mes)', cat: 'completas', price: 17, icon: '💛', plan: 'Cuenta Completa 1 Mes' },
+      { id: 'c9', name: 'ViX Completa Anual', cat: 'completas', price: 60, icon: '💛', plan: 'Cuenta Completa Anual' },
+      { id: 'c10', name: 'Universal+ Completa', cat: 'completas', price: 42, icon: '🩷', plan: 'Cuenta Completa' },
+      { id: 'c11', name: 'MUBI Completa', cat: 'completas', price: 30, icon: '🧡', plan: 'Cuenta Completa' },
+      { id: 'c12', name: 'FOX ONE Completa', cat: 'completas', price: 45, icon: '🦊', plan: 'Cuenta Completa' },
+      { id: 'c13', name: 'Apple TV+ Completa', cat: 'completas', price: 35, icon: '🍎', plan: 'Cuenta Completa' },
+
+      // MÚSICA PREMIUM
+      { id: 'm1', name: 'Spotify (1 mes)', cat: 'musica', price: 45, icon: '💚', plan: 'A mis datos (1 Mes)' },
+      { id: 'm2', name: 'Spotify (3 meses)', cat: 'musica', price: 80, icon: '💚', plan: 'Membresía 3 Meses' },
+      { id: 'm3', name: 'Spotify (6 meses)', cat: 'musica', price: 110, icon: '💚', plan: 'Membresía 6 Meses' },
+      { id: 'm4', name: 'Apple Music (1 mes)', cat: 'musica', price: 35, icon: '🍎', plan: 'Membresía 1 Mes' },
+      { id: 'm5', name: 'Amazon Music', cat: 'musica', price: 20, icon: '🎵', plan: 'Música HD Ilimitada' },
+      { id: 'm6', name: 'Deezer (1 mes)', cat: 'musica', price: 35, icon: '🎵', plan: 'Membresía 1 Mes HiFi' },
+
+      // YOUTUBE PREMIUM
+      { id: 'y1', name: 'YouTube Premium Invitación', cat: 'youtube', price: 20, icon: '📩', plan: 'Invitación a Grupo Familiar' },
+      { id: 'y2', name: 'YouTube Premium Individual', cat: 'youtube', price: 45, icon: '👤', plan: 'Cuenta Individual' },
+      { id: 'y3', name: 'YouTube Premium Familiar', cat: 'youtube', price: 65, icon: '👨‍👩‍👧', plan: 'Cuenta Familiar Completa' },
+
+      // APRENDIZAJE & PRODUCTIVIDAD
+      { id: 'a1', name: 'Canva Edu (1 mes)', cat: 'productividad', price: 18, icon: '🎨', plan: 'Acceso Pro 1 Mes' },
+      { id: 'a2', name: 'Canva Edu Anual', cat: 'productividad', price: 25, icon: '🎨', plan: 'Acceso Pro 12 Meses' },
+      { id: 'a3', name: 'Duolingo (1 mes)', cat: 'productividad', price: 30, icon: '📚', plan: 'Super Duolingo 1 Mes' },
+      { id: 'a4', name: 'Duolingo (12 meses)', cat: 'productividad', price: 30, icon: '📚', plan: 'Super Duolingo 12 Meses' },
+      { id: 'a5', name: 'ChatGPT Go Compartido', cat: 'productividad', price: 50, icon: '🤖', plan: 'Inteligencia Artificial Plus' }
+    ];
+
+    let currentCategory = 'todas';
+    let cart = [];
+
+    // RENDERIZADO DEL CATÁLOGO
+    function isInvitationProduct(p) {
+  if (!p) return false;
+  const n = (p.name || "").toLowerCase();
+  const pl = (p.plan || "").toLowerCase();
+  const c = (p.cat || "").toLowerCase();
+  return n.includes("canva") || n.includes("duolingo") || n.includes("youtube") || n.includes("chatgpt") || c === "productividad" || pl.includes("invita");
+}
+
+function renderStore() {
+  const container = document.getElementById("productsContainer");
+  const search = document.getElementById("searchInput").value.toLowerCase().trim();
+
+  const filtered = PRODUCTS.filter(p => {
+    const matchCat = (currentCategory === "todas" || p.cat === currentCategory);
+    const matchSearch = p.name.toLowerCase().includes(search) || p.plan.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding: 60px 20px; color: #94a3b8;"><div style="font-size: 3rem; margin-bottom: 10px;">🔍</div><h3 style="color:#1e293b; margin-bottom: 6px;">No encontramos resultados</h3><p>Intenta buscando con otro nombre o plataforma.</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const isInv = isInvitationProduct(p);
+    const qty = typeof getProductStock === "function" ? getProductStock(p) : 0;
+    let badgeStock = "";
+    let btnAccion = "";
+
+    if (isInv) {
+      badgeStock = '<span style="background:rgba(13,110,253,0.12); color:#0d6efd; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">✉️ Activación por Invitación</span>';
+      btnAccion = '<button type="button" class="btn-buy-now" style="background:#0d6efd;" onclick="buySingleProduct(\'' + p.id + '\')">Solicitar ✉️</button>';
+    } else if (qty > 0) {
+      badgeStock = '<span style="background:rgba(46,125,50,0.12); color:#2e7d32; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">🟢 ' + qty + ' disponible' + (qty > 1 ? "s" : "") + '</span>';
+      btnAccion = '<button type="button" class="btn-buy-now" onclick="buySingleProduct(\'' + p.id + '\')">Comprar en línea ⚡</button>';
+    } else {
+      badgeStock = '<span style="background:rgba(229,56,59,0.12); color:#e5383b; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">🔴 0 disponibles (Agotado)</span>';
+      btnAccion = '<button type="button" class="btn-buy-now" onclick="buySingleProduct(\'' + p.id + '\')">Comprar en línea ⚡</button>';
+    }
+
+    const imgHtml = (typeof getServiceImage === "function" && getServiceImage(p))
+      ? '<img src="' + getServiceImage(p) + '" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">'
+      : (p.icon || "🎬");
+
+    return '<article class="card-item">' +
+      '<div>' +
+        '<div class="card-header">' +
+          '<div class="service-badge">' + imgHtml + '</div>' +
+          '<div class="service-meta">' +
+            '<span class="service-category">' + getCategoryName(p.cat) + '</span>' +
+            '<h2 class="service-name">' + p.name + '</h2>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:0.86rem; color: var(--text-muted); margin-top:6px;">' + p.plan + '</div>' +
+      '</div>' +
+      '<div>' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' + badgeStock + '</div>' +
+        '<div class="price-row">' +
+          '<span class="price-label">Precio</span>' +
+          '<div class="price-amount">$' + p.price + ' <span>MXN</span></div>' +
+        '</div>' +
+        '<div class="card-actions">' +
+          btnAccion +
+          '<button type="button" class="btn-add-cart" title="Agregar al carrito" onclick="addToCart(\'' + p.id + '\')">➕</button>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }).join("");
+}
+
+function getCategoryName(cat) {
+      const map = {
+        'perfiles': 'Perfil',
+        'completas': 'Cuenta Completa',
+        'musica': 'Música',
+        'youtube': 'YouTube',
+        'productividad': 'Productividad'
+      };
+      return map[cat] || 'Streaming';
+    }
+
+    function setCategory(cat, el) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      renderStore();
+    }
+
+    // MANEJO DE CARRITO
+    function addToCart(productId) {
+      const item = PRODUCTS.find(p => p.id === productId);
+      if (!item) return;
+      cart.push(item);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cartBar = document.getElementById('cartBar');
+      const countLabel = document.getElementById('cartCountLabel');
+      const totalLabel = document.getElementById('cartTotalLabel');
+
+      if (cart.length > 0) {
+        cartBar.classList.add('visible');
+        const total = cart.reduce((acc, p) => acc + p.price, 0);
+        countLabel.innerText = `${cart.length} servicio${cart.length > 1 ? 's' : ''} (Ver detalle)`;
+        totalLabel.innerText = `$${total} MXN`;
+      } else {
+        cartBar.classList.remove('visible');
+        closeCartDrawer();
+      }
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartUI();
+    }
+
+    function openCartDrawer() {
+      const drawer = document.getElementById('cartDrawer');
+      const list = document.getElementById('drawerItemsList');
+      const totalText = document.getElementById('drawerTotalText');
+
+      if (cart.length === 0) return;
+
+      list.innerHTML = cart.map((p, index) => `
+        <div class="cart-row-item">
+          <div>
+            <div style="font-weight:700; color:var(--text-main);">${getServiceImage(p) ? '<img src="' + getServiceImage(p) + '" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">' : (p.icon || '🎬')} ${p.name}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${p.plan}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-weight:800; color:var(--primary);">$${p.price}</span>
+            <button type="button" onclick="removeFromCart(${index})" style="background:transparent; border:none; color:#ef4444; font-weight:700; cursor:pointer;">✕</button>
+          </div>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((acc, p) => acc + p.price, 0);
+      totalText.innerText = `$${total} MXN`;
+      drawer.classList.add('active');
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+      if (cart.length > 0) openCartDrawer();
+    }
+
+    function closeCartDrawer() {
+      document.getElementById('cartDrawer').classList.remove('active');
+    }
+
+    // ENVÍO DE PEDIDOS A WHATSAPP
+    function getWhatsAppBaseUrl() {
+      return isMobileDevice ? "https://wa.me/" : "https://web.whatsapp.com/send?phone=";
+    }
+
+    function buySingleProduct(productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  if (!p) return;
+  const isInv = typeof isInvitationProduct === "function" && isInvitationProduct(p);
+  let msg = "";
+  if (isInv) {
+    msg = "¡Hola *Cherry Streaming MX*! 🍒🦇\n\n" +
+          "Me interesa solicitar la activación por invitación de:\n" +
+          "📌 *" + p.name + "* (" + p.plan + ")\n" +
+          "💰 *Precio:* $" + p.price + " MXN\n\n" +
+          "¿Me podrías indicar los datos de pago y solicitar mi correo para enviarme la invitación?";
+  } else {
+    msg = "¡Hola *Cherry Streaming MX*! 🍒🦇\n\n" +
+          "Me interesa contratar:\n" +
+          "📌 *" + p.name + "* (" + p.plan + ")\n" +
+          "💰 *Precio:* $" + p.price + " MXN\n\n" +
+          "¿Me podrías proporcionar los datos de pago para transferirte? Quedo atento(a).";
+  }
+  const targetPhone = "639559603306";
+  const finalUrl = "https://wa.me/" + targetPhone + "?text=" + encodeURIComponent(msg);
+  window.open(finalUrl, "_blank");
+}
+
+function sendCartWhatsApp() {
+      if (cart.length === 0) return;
+
+      const total = cart.reduce((acc, p) => acc + p.price, 0);
+      let listDetails = "";
+      cart.forEach((p, i) => {
+        listDetails += `${i + 1}. *${p.name}* (${p.plan}) — $${p.price} MXN\n`;
+      });
+
+      const msg = `¡Hola *Cherry Streaming MX*! 🍒🦇\n\nDeseo realizar un pedido con los siguientes servicios:\n\n${listDetails}\n💵 *TOTAL A PAGAR:* $${total} MXN\n\n¿Me proporcionas tus cuentas para hacerte la transferencia y enviarte el comprobante?`;
+
+      const baseUrl = getWhatsAppBaseUrl();
+      const finalUrl = baseUrl === "https://wa.me/" 
+        ? `${baseUrl}${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`
+        : `${baseUrl}${WHATSAPP_PHONE}&text=${encodeURIComponent(msg)}`;
+
+      window.open(finalUrl, '_blank');
+    }
+
+    // INICIALIZACIÓN
+    renderStore();
+  </script>
+
+  <!-- MODAL SOLICITUD DE DATOS PARA BOT Y FIRESTORE -->
+  <div id="customerModal" class="cart-drawer-overlay">
+    <div class="cart-drawer" style="border-radius:24px; padding:26px; max-width:440px;">
+      <div class="drawer-header">
+        <h3 class="drawer-title">⚡ Datos de Entrega</h3>
+        <button type="button" class="drawer-close" onclick="closeCustomerModal()">✕</button>
+      </div>
+      <p style="color:var(--text-muted); font-size:0.88rem; margin-bottom:16px;">
+        Ingresa tu nombre y tu número de WhatsApp para que el sistema y el bot preparen tu entrega:
+      </p>
+      
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:18px;">
+        <div>
+          <label style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase;">Tu Nombre</label>
+          <input type="text" id="custNameInput" class="search-input" placeholder="Ej. Juan Pérez" style="margin-top:4px;">
+        </div>
+        <div>
+          <label style="font-size:0.8rem; font-weight:700; color:#64748b; text-transform:uppercase;">WhatsApp (10 dígitos)</label>
+          <input type="tel" id="custPhoneInput" class="search-input" placeholder="Ej. 639559603306" maxlength="10" style="margin-top:4px;">
+        </div>
+      </div>
+
+      <button type="button" id="btnConfirmOrderWithBot" class="btn-buy-now" style="width:100%; padding:14px; font-size:1rem;" onclick="processOrderToFirestoreAndWhatsApp()">
+        Confirmar Compra en Línea ⚡
+      </button>
+    </div>
+  </div>
+
+
+  <script>
+    (async function syncLiveStock() {
+      const PROJECT_ID = "cherry-streaming-mx";
+      const BASE_URL = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID + "/databases/(default)/documents";
+      
+      try {
+        const res = await fetch(BASE_URL + "/inventory");
+        if (!res.ok) return;
+        const data = await res.json();
+        const docs = data.documents || [];
+        
+        const counts = {};
+        docs.forEach(d => {
+          const f = d.fields || {};
+          const alias = f.alias ? f.alias.stringValue : null;
+          const status = f.status ? f.status.stringValue : "disponible";
+          if (alias && status === "disponible") {
+            counts[alias] = (counts[alias] || 0) + 1;
+          }
+        });
+
+        // Actualizar badges en tarjetas existentes si tienen data-alias o texto identificador
+        document.querySelectorAll("[data-alias]").forEach(el => {
+          const alias = el.getAttribute("data-alias");
+          const cant = counts[alias] || 0;
+          if (cant > 0) {
+            el.innerHTML = "🟢 " + cant + " disponible" + (cant > 1 ? "s" : "");
+            el.className = el.className.replace(/badge-danger|badge-agotado/g, "") + " badge-disponible";
+          } else {
+            el.innerHTML = "🔴 Agotado";
+            el.className = el.className.replace(/badge-success|badge-disponible/g, "") + " badge-agotado";
+          }
+        });
+      } catch(e) {
+        console.warn("Stock listener:", e);
+      }
+    })();
+  </script>
+
+
+<script id="cherry-auth-script">
+
+  function getDbInstance() {
+    if (window.db) return window.db;
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      window.db = firebase.firestore();
+      return window.db;
+    }
+    return null;
+  }
+
+  let currentCustomer = null;
+  let customerUnsub = null;
+
+  function openAuthModal(mode) {
+    document.getElementById('authModalOverlay').style.display = 'flex';
+    document.getElementById('authStatusMsg').innerText = '';
+    switchAuthTab(mode);
+  }
+
+  function closeAuthModal() {
+    document.getElementById('authModalOverlay').style.display = 'none';
+  }
+
+  function switchAuthTab(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('tabBtnLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabBtnRegister').classList.toggle('active', !isLogin);
+    document.getElementById('formLoginView').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('formRegisterView').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('authStatusMsg').innerText = '';
+  }
+
+  function validateCode(code) {
+    return /^[A-Z][a-z]{3}\d{2}$/.test(code);
+  }
+
+  async function handleCustomerRegister() {
+    const code = document.getElementById('regUserInput').value.trim();
+    const rawPhone = document.getElementById('regPhoneInput').value.trim();
+    const email = document.getElementById('regEmailInput').value.trim().toLowerCase();
+    const msg = document.getElementById('authStatusMsg');
+
+    if (!validateCode(code)) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '❌ El usuario debe tener 1 Mayúscula, 3 minúsculas y 2 números (ej: Abcd12).';
+      return;
+    }
+
+    const cleanPhone = rawPhone.replace(/\D/g, '');
+    if (cleanPhone.length < 10) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '❌ Ingresa un número de WhatsApp válido (mínimo 10 dígitos).';
+      return;
+    }
+
+    if (!email.includes('@')) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '❌ Ingresa un correo electrónico válido.';
+      return;
+    }
+
+    msg.style.color = '#38bdf8';
+    msg.innerText = '⏳ Verificando disponibilidad...';
+
+    try {
+      const docRef = window.db.collection('customers').doc(code);
+      const docSnap = await docRef.get();
+
+      if (docSnap.exists) {
+        msg.style.color = '#ef4444';
+        msg.innerText = '❌ El código de usuario ya está registrado. Elige otro o inicia sesión.';
+        return;
+      }
+
+      const phoneQuery = await window.db.collection('customers').where('phone', '==', cleanPhone).limit(1).get();
+      if (!phoneQuery.empty) {
+        msg.style.color = '#ef4444';
+        msg.innerText = '❌ Este número ya tiene una cuenta. Inicia sesión con él.';
+        return;
+      }
+
+      await docRef.set({
+        customerCode: code,
+        phone: cleanPhone,
+        email: email,
+        balance: 0,
+        source: 'web_store',
+        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      msg.style.color = '#22c55e';
+      msg.innerText = '✅ ¡Registro exitoso! Iniciando sesión...';
+
+      setCustomerSession({ customerCode: code, phone: cleanPhone, email: email, balance: 0 });
+      setTimeout(closeAuthModal, 1000);
+    } catch (err) {
+      console.error('Error registrando:', err);
+      msg.style.color = '#ef4444';
+      msg.innerText = '⚠️ Error al guardar en base de datos: ' + err.message;
+    }
+  }
+
+  async function handleCustomerLogin() {
+    const input = document.getElementById('loginUserInput').value.trim();
+    const msg = document.getElementById('authStatusMsg');
+
+    if (!input) {
+      msg.style.color = '#ef4444';
+      msg.innerText = '❌ Ingresa tu código de usuario o número telefónico.';
+      return;
+    }
+
+    msg.style.color = '#38bdf8';
+    msg.innerText = '⏳ Verificando cuenta...';
+
+    try {
+      let custData = null;
+
+      // 1. Intentar por código directo (ID de documento)
+      const docRef = window.db.collection('customers').doc(input);
+      const docSnap = await docRef.get();
+
+      if (docSnap.exists) {
+        custData = { id: docSnap.id, ...docSnap.data() };
+      } else {
+        // 2. Intentar buscar por teléfono
+        const clean = input.replace(/\D/g, '');
+        const qSnap = await window.db.collection('customers').where('phone', '==', clean).limit(1).get();
+        if (!qSnap.empty) {
+          custData = { id: qSnap.docs[0].id, ...qSnap.docs[0].data() };
+        }
+      }
+
+      if (!custData) {
+        msg.style.color = '#ef4444';
+        msg.innerText = '❌ No encontramos ninguna cuenta registrada con esos datos.';
+        return;
+      }
+
+      msg.style.color = '#22c55e';
+      msg.innerText = '✅ ¡Bienvenido(a)!';
+      setCustomerSession(custData);
+      setTimeout(closeAuthModal, 800);
+    } catch (err) {
+      console.error('Error al iniciar sesión:', err);
+      msg.style.color = '#ef4444';
+      msg.innerText = '⚠️ Error al consultar usuario: ' + err.message;
+    }
+  }
+
+  function setCustomerSession(data) {
+    currentCustomer = data;
+    localStorage.setItem('cherry_user_code', data.customerCode || data.id);
+    updateAuthUI();
+    listenCustomerBalance(data.customerCode || data.id);
+  }
+
+  function listenCustomerBalance(code) {
+    if (customerUnsub) customerUnsub();
+    customerUnsub = window.db.collection('customers').doc(code).onSnapshot(doc => {
+      if (doc.exists) {
+        const d = doc.data();
+        currentCustomer = { id: doc.id, ...d };
+        const balEl = document.getElementById('authBalanceDisplay');
+        if (balEl) balEl.innerText = Number(d.balance || 0).toFixed(2);
+      }
+    });
+  }
+
+  function updateAuthUI() {
+    const guestView = document.getElementById('authGuestView');
+    const userView = document.getElementById('authUserView');
+    const userDisplay = document.getElementById('authUsernameDisplay');
+    const balDisplay = document.getElementById('authBalanceDisplay');
+
+    if (currentCustomer) {
+      guestView.style.display = 'none';
+      userView.style.display = 'flex';
+      userDisplay.innerText = '👤 ' + (currentCustomer.customerCode || currentCustomer.id);
+      balDisplay.innerText = Number(currentCustomer.balance || 0).toFixed(2);
+    } else {
+      guestView.style.display = 'flex';
+      userView.style.display = 'none';
+    }
+  }
+
+  function logoutCustomer() {
+    currentCustomer = null;
+    if (customerUnsub) customerUnsub();
+    localStorage.removeItem('cherry_user_code');
+    updateAuthUI();
+  }
+
+  // Restaurar sesión al cargar
+  document.addEventListener('DOMContentLoaded', async () => {
+    const savedCode = localStorage.getItem('cherry_user_code');
+    if (savedCode && typeof db !== 'undefined') {
+      try {
+        const docSnap = await window.db.collection('customers').doc(savedCode).get();
+        if (docSnap.exists) {
+          setCustomerSession({ id: docSnap.id, ...docSnap.data() });
+        }
+      } catch (e) {
+        console.warn('No se pudo restaurar sesión:', e);
+      }
+    }
+  });
+</script>
+
+
+  <!-- MODAL DE ENTREGA INMEDIATA -->
+  <div id="deliveryModalOverlay" class="delivery-modal-overlay">
+    <div class="delivery-card">
+      <div style="text-align:center; margin-bottom:14px;">
+        <div style="font-size:3rem; margin-bottom:6px;">🎉</div>
+        <h3 style="margin:0; font-size:1.4rem; color:#4ade80;">¡Compra Exitosa!</h3>
+        <p style="color:#94a3b8; font-size:0.85rem; margin:6px 0 0 0;">Tu servicio ha sido activado con tu saldo disponible.</p>
+      </div>
+
+      <div id="deliveryDetailsContainer"></div>
+
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button id="btnCopyCreds" class="auth-btn-secondary" style="flex:1; padding:10px;" onclick="copyDeliveryData()">📋 Copiar Accesos</button>
+        <button class="auth-btn-action" style="flex:1; padding:10px;" onclick="closeDeliveryModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+
+<script id="cherry-checkout-script">
+  let lastDeliveredData = "";
+
+  async function executeBalanceCheckout() {
+    if (!currentCustomer) {
+      openAuthModal('login');
+      return;
+    }
+
+    if (!cart || cart.length === 0) {
+      alert("El carrito está vacío.");
+      return;
+    }
+
+    const total = cart.reduce((acc, p) => acc + Number(p.price || 0), 0);
+    const userBal = Number(currentCustomer.balance || 0);
+
+    if (userBal < total) {
+      alert("Saldo insuficiente para completar la compra.");
+      return;
+    }
+
+    const confirmBuy = confirm("¿Deseas pagar $" + total + " MXN con tu saldo disponible?");
+    if (!confirmBuy) return;
+
+    const btn = document.querySelector('#payWithBalanceContainer button');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerText = "⏳ Procesando compra con tu saldo...";
+    }
+
+    try {
+      const custRef = window.db.collection('customers').doc(currentCustomer.customerCode || currentCustomer.id);
+      
+      // 1. Obtener saldo fresco del servidor
+      const freshSnap = await custRef.get();
+      const actualBalance = Number(freshSnap.data()?.balance || 0);
+
+      if (actualBalance < total) {
+        alert("Tu saldo ha cambiado. Fondos insuficientes.");
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      const newBalance = actualBalance - total;
+      const deliveredItems = [];
+
+      // 2. Procesar cada producto del carrito
+      for (const item of cart) {
+        const isInv = typeof isInvitationProduct === 'function' && isInvitationProduct(item);
+
+        if (isInv) {
+          // Registro de orden para servicio por invitación
+          const orderDoc = await window.db.collection('orders').add({
+            serviceName: item.name,
+            servicePlan: item.plan || '',
+            price: Number(item.price || 0),
+            phone: currentCustomer.phone || '',
+            customerCode: currentCustomer.customerCode || currentCustomer.id,
+            email: currentCustomer.email || '',
+            status: 'pagado_con_saldo',
+            type: 'invitacion',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            channel: 'web_store'
+          });
+
+          deliveredItems.push({
+            name: item.name,
+            type: 'invitacion',
+            folio: orderDoc.id.slice(0, 7).toUpperCase(),
+            email: currentCustomer.email
+          });
+        } else {
+          // Buscar stock disponible en inventario
+          const invQuery = await window.db.collection('inventory')
+            .where('alias', '==', item.alias || item.id)
+            .where('status', '==', 'disponible')
+            .limit(1)
+            .get();
+
+          let accountData = null;
+
+          if (!invQuery.empty) {
+            const accDoc = invQuery.docs[0];
+            accountData = accDoc.data();
+
+            await accDoc.ref.update({
+              status: 'ocupada',
+              assignedTo: currentCustomer.phone || '',
+              assignedUser: currentCustomer.customerCode || currentCustomer.id,
+              deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }
+
+          const orderDoc = await window.db.collection('orders').add({
+            serviceAlias: item.alias || item.id,
+            serviceName: item.name,
+            servicePlan: item.plan || '',
+            price: Number(item.price || 0),
+            phone: currentCustomer.phone || '',
+            customerCode: currentCustomer.customerCode || currentCustomer.id,
+            status: 'pagado_con_saldo',
+            type: 'stock',
+            accountEmail: accountData ? accountData.email : null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            channel: 'web_store'
+          });
+
+          deliveredItems.push({
+            name: item.name,
+            type: 'stock',
+            folio: orderDoc.id.slice(0, 7).toUpperCase(),
+            account: accountData
+          });
+        }
+      }
+
+      // 3. Descontar saldo final en customers
+      await custRef.update({
+        balance: newBalance,
+        lastPurchase: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 4. Limpiar carrito y cerrar modal del carrito
+      cart = [];
+      if (typeof updateCartCount === 'function') updateCartCount();
+      if (typeof renderCart === 'function') renderCart();
+      const cartModal = document.getElementById('cartModal');
+      if (cartModal) cartModal.style.display = 'none';
+
+      // 5. Mostrar modal de entrega
+      showDeliverySuccess(deliveredItems, newBalance);
+
+    } catch (err) {
+      console.error("Error en checkout:", err);
+      alert("Ocurrió un error al procesar la compra: " + err.message);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "💳 Pagar con Saldo";
+      }
+    }
+  }
+
+  function showDeliverySuccess(items, remainingBalance) {
+    const container = document.getElementById('deliveryDetailsContainer');
+    let copyText = "🍒 *CHERRY STREAMING - COMPROBANTE DE COMPRA* 🍒\n\n";
+
+    let htmlMarkup = '<div style="max-height:300px; overflow-y:auto;">';
+
+    items.forEach((it, idx) => {
+      copyText += "📦 *Servicio:* " + it.name + "\n" + "🔖 *Folio:* #" + it.folio + "\n";
+
+      if (it.type === 'invitacion') {
+        copyText += "✉️ *Modo:* Invitación directa por correo\n" + "📧 *Enviado a:* " + it.email + "\n\n";
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#38bdf8; margin-bottom:6px;">📌 ${it.name} (Folio #${it.folio})</div>
+            <div style="font-size:0.85rem; color:#94a3b8;">Activación por Invitación:</div>
+            <div style="color:#f8fafc; font-weight:600; margin-top:2px;">Correo registrado: ${it.email}</div>
+            <div style="color:#a7f3d0; font-size:0.75rem; margin-top:4px;">⏳ Tu acceso llegará a tu bandeja en breves minutos.</div>
+          </div>
+        `;
+      } else if (it.account) {
+        const acc = it.account;
+        copyText += "📧 *Correo:* " + (acc.email || 'N/A') + "\n" +
+                    "🔑 *Contraseña:* " + (acc.password || 'N/A') + "\n" +
+                    (acc.profile ? "👤 *Perfil:* " + acc.profile + "\n" : "") +
+                    (acc.pin ? "🔒 *PIN:* " + acc.pin + "\n" : "") +
+                    (acc.expiration ? "⏳ *Vence:* " + acc.expiration + "\n" : "") + "\n";
+
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#4ade80; margin-bottom:6px;">✅ ${it.name} (Folio #${it.folio})</div>
+            <div class="credential-line"><span style="color:#94a3b8;">Correo:</span> <span>${acc.email || 'N/A'}</span></div>
+            <div class="credential-line"><span style="color:#94a3b8;">Contraseña:</span> <span>${acc.password || 'N/A'}</span></div>
+            ${acc.profile ? '<div class="credential-line"><span style="color:#94a3b8;">Perfil:</span> <span>' + acc.profile + '</span></div>' : ''}
+            ${acc.pin ? '<div class="credential-line"><span style="color:#94a3b8;">PIN:</span> <span>' + acc.pin + '</span></div>' : ''}
+            ${acc.expiration ? '<div class="credential-line"><span style="color:#94a3b8;">Vence:</span> <span>' + acc.expiration + '</span></div>' : ''}
+          </div>
+        `;
+      } else {
+        copyText += "⏳ *Estado:* En asignación por operador\n\n";
+        htmlMarkup += `
+          <div class="delivery-credential-box">
+            <div style="font-weight:700; color:#fbbf24; margin-bottom:6px;">⏳ ${it.name} (Folio #${it.folio})</div>
+            <div style="font-size:0.8rem; color:#94a3b8;">El operador está despachando tu cuenta. Te notificaremos a tu WhatsApp.</div>
+          </div>
+        `;
+      }
+    });
+
+    copyText += "💵 *Saldo restante:* $" + Number(remainingBalance).toFixed(2) + " MXN";
+    htmlMarkup += '</div>';
+
+    container.innerHTML = htmlMarkup;
+    lastDeliveredData = copyText;
+
+    document.getElementById('deliveryModalOverlay').style.display = 'flex';
+  }
+
+  function copyDeliveryData() {
+    if (!lastDeliveredData) return;
+    navigator.clipboard.writeText(lastDeliveredData).then(() => {
+      const btn = document.getElementById('btnCopyCreds');
+      btn.innerText = "✅ ¡Copiado!";
+      setTimeout(() => { btn.innerText = "📋 Copiar Accesos"; }, 2000);
+    });
+  }
+
+  function closeDeliveryModal() {
+    document.getElementById('deliveryModalOverlay').style.display = 'none';
+  }
+</script>
+
+
+<script id="cherry-stock-sync-v2">
+  // Mapa de alias oficiales bot <-> web
+  window.PRODUCT_ALIAS_LOOKUP = {
+    "app": ["apple", "app"],
+    "uni": ["universal", "uni"],
+    "vx1": ["vix1", "vx1"],
+    "cru": ["crunchyroll", "cru"],
+    "vca": ["vixanual", "vca"],
+    "ca1": ["canva1", "ca1"],
+    "sp6": ["spotify6", "sp6"],
+    "vx3": ["vix3", "vx3"],
+    "dhu": ["disneyhulu", "dhu"],
+    "yti": ["youtubeinv", "yti"],
+    "max": ["max", "hbo"],
+    "nep": ["netflixpriv", "nep"],
+    "caa": ["canvaanual", "caa"],
+    "vxc": ["vixcomp", "vxc"],
+    "apc": ["applecomp", "apc"],
+    "fox": ["fox", "foxone"],
+    "sp1": ["spotify1", "sp1"],
+    "par": ["paramount", "par"],
+    "dis": ["disney", "dis"],
+    "ytf": ["youtubefam", "ytf"],
+    "dhc": ["disneyhulucomp", "dhc"],
+    "muc": ["mubicomp", "muc"],
+    "crc": ["crunchycomp", "crc"],
+    "vx5": ["vix5", "vx5"],
+    "fxc": ["foxcomp", "fxc"],
+    "pac": ["paramountcomp", "pac"],
+    "prm": ["prime", "prm", "amazon"],
+    "net": ["netflix", "net"],
+    "vx2": ["vix2", "vx2"],
+    "prc": ["primecomp", "prc"],
+    "ipt": ["iptv", "ipt"],
+    "vya": ["vix12", "vya"],
+    "nec": ["netflixcomp", "nec"],
+    "gpt": ["chatgpt", "gpt"],
+    "dsc": ["disneycomp", "dsc"],
+    "du1": ["duo1", "du1"],
+    "cla": ["claro", "cla"],
+    "dua": ["duoanual", "dua"],
+    "yt1": ["youtube1", "yt1"],
+    "mub": ["mubi", "mub"],
+    "sp3": ["spotify3", "sp3"],
+    "amu": ["applemusic", "amu"],
+    "dzr": ["deezer", "dzr"],
+    "azm": ["amazonmusic", "azm"],
+    "unc": ["universalcomp", "unc"],
+    "mxc": ["maxcomp", "mxc"]
+  };
+
+  window.STOCK_MAP = {};
+
+  function updateStockBadgesOnUI() {
+    // 1. Si existe getProductStock, sincronizar el valor
+    if (typeof window.getProductStock === "function") {
+      window.originalGetProductStock = function(p) {
+        let count = 0;
+        const pId = (p.id || "").toLowerCase();
+        const pName = (p.name || "").toLowerCase();
+
+        for (const [alias, matchKeys] of Object.entries(window.PRODUCT_ALIAS_LOOKUP)) {
+          if (matchKeys.some(k => pId.includes(k) || pName.includes(k))) {
+            count += (window.STOCK_MAP[alias] || 0);
+          }
+        }
+        return count;
+      };
+    }
+
+    // 2. Actualizar directamente el DOM de las tarjetas visibles
+    document.querySelectorAll(".card, .product-card, div[class*='product']").forEach(card => {
+      const text = card.innerText.toLowerCase();
+      let matchedAlias = null;
+
+      for (const [alias, matchKeys] of Object.entries(window.PRODUCT_ALIAS_LOOKUP)) {
+        if (matchKeys.some(k => text.includes(k))) {
+          matchedAlias = alias;
+          break;
+        }
+      }
+
+      if (matchedAlias) {
+        const qty = window.STOCK_MAP[matchedAlias] || 0;
+        // Buscar el contenedor de stock dentro de la tarjeta
+        const allSpans = card.querySelectorAll("span, p, div");
+        allSpans.forEach(el => {
+          if (el.textContent.includes("disponibles") || el.textContent.includes("Agotado")) {
+            if (qty > 0) {
+              el.innerHTML = '<span style="color:#22c55e; font-weight:700;">🟢 ' + qty + ' disponibles</span>';
+            } else {
+              el.innerHTML = '<span style="color:#ef4444; font-weight:600;">🔴 0 disponibles (Agotado)</span>';
+            }
+          }
+        });
+      }
+    });
+  }
+
+  function connectRealtimeInventory() {
+    const firestore = window.db || (typeof firebase !== "undefined" && firebase.apps?.length ? firebase.firestore() : null);
+    if (!firestore) {
+      setTimeout(connectRealtimeInventory, 300);
+      return;
+    }
+
+    firestore.collection("inventory")
+      .where("status", "==", "disponible")
+      .onSnapshot(snapshot => {
+        const counts = {};
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const al = (d.alias || d.serviceAlias || "").toLowerCase().trim();
+          if (al) {
+            counts[al] = (counts[al] || 0) + 1;
+          }
+        });
+
+        window.STOCK_MAP = counts;
+        updateStockBadgesOnUI();
+
+        // Si la tienda usa renderProducts, disparar re-render
+        if (typeof renderProducts === "function") {
+          renderProducts();
+        }
+      }, err => {
+        console.warn("Aviso en listener de stock:", err.message);
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    connectRealtimeInventory();
+    setInterval(updateStockBadgesOnUI, 2000);
+  });
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    connectRealtimeInventory();
+    setInterval(updateStockBadgesOnUI, 2000);
+  }
+</script>
+
+
+<script id="cherry-web-checkout-online">
+  // Función para procesar compra de un solo producto
+  window.buySingleProduct = async function(productId) {
+    if (!currentCustomer) {
+      alert("🔑 Inicia sesión con tu código de usuario para comprar directamente con tu saldo.");
+      openAuthModal('login');
+      return;
+    }
+
+    const p = PRODUCTS.find(x => x.id === productId);
+    if (!p) return;
+
+    const stock = (typeof window.getProductStock === "function") ? window.getProductStock(p) : 0;
+    if (stock <= 0) {
+      alert("⚠️ Lo sentimos, " + p.name + " está agotado o sobre pedido.");
+      return;
+    }
+
+    await dispatchSessionOrder([p]);
+  };
+
+  // Función para procesar compra de todo el carrito
+  window.sendCartWhatsApp = async function() {
+    if (!currentCustomer) {
+      alert("🔑 Inicia sesión con tu código de usuario para comprar.");
+      openAuthModal('login');
+      return;
+    }
+
+    if (!cart || cart.length === 0) {
+      alert("⚠️ El carrito está vacío.");
+      return;
+    }
+
+    await dispatchSessionOrder([...cart]);
+  };
+
+  // Despacho unificado usando la cuenta de Firebase de currentCustomer
+  async function dispatchSessionOrder(items) {
+    const totalAmount = items.reduce((acc, it) => acc + (Number(it.price) || 0), 0);
+    const userBalance = Number(currentCustomer.balance || 0);
+
+    if (userBalance < totalAmount) {
+      alert("⚠️ Saldo insuficiente en tu cuenta (" + (currentCustomer.customerCode || currentCustomer.id) + ").\n" +
+            "💵 Tu saldo disponible: $" + userBalance.toFixed(2) + " MXN\n" +
+            "🛒 Total a pagar: $" + totalAmount.toFixed(2) + " MXN\n\n" +
+            "Recarga saldo con el operador en WhatsApp escribiendo -pagos.");
+      return;
+    }
+
+    const confirmBuy = confirm("¿Deseas confirmar la compra de " + items.length + " servicio(s) por $" + totalAmount + " MXN?\n\n" +
+                               "👤 Usuario: " + (currentCustomer.customerCode || currentCustomer.id) + "\n" +
+                               "📱 WhatsApp destino: " + currentCustomer.phone + "\n\n" +
+                               "Las credenciales se enviarán inmediatamente a tu WhatsApp personal.");
+    if (!confirmBuy) return;
+
+    try {
+      const firestore = window.db || (typeof firebase !== "undefined" && firebase.apps?.length ? firebase.firestore() : null);
+      if (!firestore) throw new Error("Sin conexión a la base de datos.");
+
+      for (const item of items) {
+        const alias = window.PRODUCT_TO_ALIAS ? (window.PRODUCT_TO_ALIAS[item.id] || "prm") : "prm";
+
+        await firestore.collection("web_dispatches").add({
+          customerCode: currentCustomer.customerCode || currentCustomer.id,
+          customerName: currentCustomer.customerCode || currentCustomer.id,
+          customerPhone: String(currentCustomer.phone).replace(/\D/g, '').slice(-10),
+          productId: item.id,
+          productName: item.name,
+          alias: alias,
+          price: Number(item.price) || 0,
+          status: "pendiente_envio_bot",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+
+      if (typeof clearCart === "function") clearCart();
+
+      alert("🎉 ¡COMPRA REALIZADA CON ÉXITO! ⚡\n\n" +
+            "El bot ha tomado tu orden y está enviando los accesos directamente a tu chat privado de WhatsApp (" + currentCustomer.phone + ").");
+
+    } catch (err) {
+      console.error("Error al procesar orden de sesión:", err);
+      alert("⚠️ Ocurrió un error al procesar tu compra: " + err.message);
+    }
+  }
+</script>
+
+</body>
+</html>

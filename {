@@ -1,0 +1,16 @@
+const fs = require('fs');
+
+// 1. Ocultar o eliminar el bot¢n viejo de Panel Gestor en index.html
+if (fs.existsSync('index.html')) {
+  let idx = fs.readFileSync('index.html', 'utf8');
+  idx = idx.replace(/(.*Panel Gestor.*)/gi, '<!-- $1 -->');
+  fs.writeFileSync('index.html', idx, 'utf8');
+  console.log('INDEX_BOTON_VIEJO_REMOVIDO');
+}
+
+// 2. Proteger admin.html con lista blanca de correos
+if (fs.existsSync('admin.html')) {
+  let adm = fs.readFileSync('admin.html', 'utf8');
+  const candado = `<script>
+const SUPERADMIN_EMAILS = ['edduardohg18@gmail.com', 'admin@cherrystream.com'];
+document.addEventListener('DOMContentLoaded', (

@@ -1,0 +1,232 @@
+[
+  {
+    "alias": "app",
+    "name": "Apple TV+",
+    "price": 20
+  },
+  {
+    "alias": "uni",
+    "name": "Universal+",
+    "price": 25
+  },
+  {
+    "alias": "vx1",
+    "name": "ViX 1 Mes",
+    "price": 8
+  },
+  {
+    "alias": "cru",
+    "name": "Crunchyroll",
+    "price": 20
+  },
+  {
+    "alias": "vca",
+    "name": "ViX Anual Completa",
+    "price": 60
+  },
+  {
+    "alias": "ca1",
+    "name": "Canva Edu 1 Mes",
+    "price": 18
+  },
+  {
+    "alias": "sp6",
+    "name": "Spotify 6 Meses",
+    "price": 110
+  },
+  {
+    "alias": "vx3",
+    "name": "ViX 3 Meses",
+    "price": 15
+  },
+  {
+    "alias": "dhu",
+    "name": "Disney+ Hulu",
+    "price": 25
+  },
+  {
+    "alias": "yti",
+    "name": "YouTube Invitación",
+    "price": 20
+  },
+  {
+    "alias": "max",
+    "name": "Max / HBO",
+    "price": 15
+  },
+  {
+    "alias": "nep",
+    "name": "Netflix Perfil Privado",
+    "price": 75
+  },
+  {
+    "alias": "caa",
+    "name": "Canva Edu Anual",
+    "price": 25
+  },
+  {
+    "alias": "vxc",
+    "name": "ViX 1 Mes Completa",
+    "price": 17
+  },
+  {
+    "alias": "apc",
+    "name": "Apple TV+ Completa",
+    "price": 35
+  },
+  {
+    "alias": "fox",
+    "name": "Fox One",
+    "price": 20
+  },
+  {
+    "alias": "sp1",
+    "name": "Spotify 1 Mes (a tus datos)",
+    "price": 45
+  },
+  {
+    "alias": "par",
+    "name": "Paramount+",
+    "price": 15
+  },
+  {
+    "alias": "dis",
+    "name": "Disney+ Estándar",
+    "price": 15
+  },
+  {
+    "alias": "ytf",
+    "name": "YouTube Familiar",
+    "price": 65
+  },
+  {
+    "alias": "dhc",
+    "name": "Disney+ Hulu Completa",
+    "price": 70
+  },
+  {
+    "alias": "muc",
+    "name": "MUBI Completa",
+    "price": 30
+  },
+  {
+    "alias": "crc",
+    "name": "Crunchyroll Completa",
+    "price": 45
+  },
+  {
+    "alias": "vx5",
+    "name": "ViX 5 Meses",
+    "price": 25
+  },
+  {
+    "alias": "fxc",
+    "name": "Fox One Completa",
+    "price": 45
+  },
+  {
+    "alias": "pac",
+    "name": "Paramount+ Completa",
+    "price": 45
+  },
+  {
+    "alias": "prm",
+    "name": "Prime Video",
+    "price": 15
+  },
+  {
+    "alias": "net",
+    "name": "Netflix Perfil",
+    "price": 50
+  },
+  {
+    "alias": "vx2",
+    "name": "ViX 2 Meses",
+    "price": 15
+  },
+  {
+    "alias": "prc",
+    "name": "Prime Video Completa",
+    "price": 40
+  },
+  {
+    "alias": "ipt",
+    "name": "IPTV / IPTV Pro",
+    "price": 25
+  },
+  {
+    "alias": "vya",
+    "name": "ViX 12 Meses (Anual)",
+    "price": 25
+  },
+  {
+    "alias": "nec",
+    "name": "Netflix Completa",
+    "price": 200
+  },
+  {
+    "alias": "gpt",
+    "name": "ChatGPT Go Compartido",
+    "price": 50
+  },
+  {
+    "alias": "dsc",
+    "name": "Disney+ Estándar Completa",
+    "price": 50
+  },
+  {
+    "alias": "du1",
+    "name": "Duolingo 1 Mes",
+    "price": 30
+  },
+  {
+    "alias": "cla",
+    "name": "Claro Video",
+    "price": 45
+  },
+  {
+    "alias": "dua",
+    "name": "Duolingo 12 Meses",
+    "price": 30
+  },
+  {
+    "alias": "yt1",
+    "name": "YouTube Individual",
+    "price": 45
+  },
+  {
+    "alias": "mub",
+    "name": "MUBI",
+    "price": 15
+  },
+  {
+    "alias": "sp3",
+    "name": "Spotify 3 Meses",
+    "price": 80
+  },
+  {
+    "alias": "amu",
+    "name": "Apple Music 1 Mes",
+    "price": 35
+  },
+  {
+    "alias": "dzr",
+    "name": "Deezer 1 Mes",
+    "price": 35
+  },
+  {
+    "alias": "azm",
+    "name": "Amazon Music",
+    "price": 20
+  },
+  {
+    "alias": "unc",
+    "name": "Universal+ Completa",
+    "price": 42
+  },
+  {
+    "alias": "mxc",
+    "name": "Max / HBO Completa",
+    "price": 45
+  }
+]

@@ -1,3 +1,5 @@
+const { analizarComprobante } = require('./lectorVouchers');
+let sock = null;
 ﻿const { 
   default: makeWASocket, 
   useMultiFileAuthState, 
@@ -51,7 +53,7 @@ async function startBot() {
 
   const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, 'auth_info_baileys'));
 
-  const sock = makeWASocket({
+  sock = makeWASocket({
     auth: state,
     logger: pino({ level: 'silent' }),
     printQRInTerminal: false,
@@ -1006,6 +1008,16 @@ async function startBot() {
     // ==========================================
     // COMANDO -REPORTAR (TICKET CON EVIDENCIA A ENCARGADAS)
     // ==========================================
+    // ==========================================
+    // COMANDOS -PAGO / -PAGOS
+    // ==========================================
+    if (body.toLowerCase() === '-pago' || body.toLowerCase() === '-pagos') {
+      const pText = "🎃🩸 *MÉTODOS DE PAGO – CHERRY STREAMING MX* 🩸🎃🍒\n\n💳 *MÉTODO DE PAGO 1*\n\n💳 *Tarjeta / Cuenta:*\n728969000137647238\n\n🏛️ *Transferencia SPEI*\n👤 *Titular:* Iolany Navarro\n\n👀 *CONCEPTO OBLIGATORIO:* COMIDA 🍽️\n\n🚨 *REGLAS CRÍTICAS DE PAGO* 🚨\n✅ El concepto debe decir únicamente *\"COMIDA\"*.\n❌ No colocar nada relacionado con streaming.\n❌ No escribir Netflix, Disney, perfil, cuenta ni nombres de plataformas.\n⚠️ *Si el concepto contiene algo diferente a \"COMIDA\", el pago no será validado.*\n\n📸 *COMPROBANTE DE PAGO* 🧾\nEnvía tu comprobante con foto al bot o al grupo para validar tu recarga de saldo o entrega.\n\n🍒🩸 *CHERRY STREAMING MX* 🩸🍒\n🎃 _¡Gracias por tu preferencia!_";
+      await sendSafeMessage(pText);
+      return;
+    }
+
+    // ==========================================
     if (body.toLowerCase().startsWith('-reportar')) {
       const parts = body.trim().split(/\s+/);
       const alias = (parts[1] || '').toLowerCase().trim();
@@ -1431,7 +1443,7 @@ db.collection('web_dispatches')
 // CRON: RECORDATORIOS AUTOMÁTICOS DE RENOVACIÓN
 // ==========================================
 async function checkUpcomingExpirations() {
-  if (!sock) return;
+  if (typeof sock === 'undefined' || !sock) return;
 
   console.log("🔍 [CRON RENOVACIONES] Verificando cuentas próximas a vencer...");
   try {

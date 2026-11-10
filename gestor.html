@@ -1388,8 +1388,11 @@ Cerrar sesión</button>
     const db = firebase.firestore();
 
     const SUPER_ADMIN_EMAILS = [
+      'iolanycastillo27@gmail.com',
+      'jorgehimawari@gmail.com',
       'xolanybami21@gmail.com',
-      'jorgehimawari@gmail.com'
+      'edduardohg18@gmail.com',
+      'admin@cherrystream.com'
     ];
 
     let currentUser = null;
@@ -1673,7 +1676,7 @@ Cerrar sesión</button>
                   'Estado: <b style="color:' + (esActivo ? 'var(--success-text)' : 'var(--danger-text)') + ';">' + (esActivo ? 'ACTIVO' : 'EXPIRADO') + '</b> | Vence: <b>' + fechaVence + '</b>' +
                 '</div>' +
               '</div>' +
-              (esSA ? '<span style="background:#0f172a; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">ADMIN</span>' : '') +
+              (email.toLowerCase() === 'iolanycastillo27@gmail.com' ? '<span style="background:#be123c; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">PROPIETARIA</span>' : (esSA ? '<span style="background:#0f172a; color:#fff; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:700;">ADMIN</span>' : '')) +
             '</div>' +
             (!esSA ? '<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">' +
               '<button type="button" class="quick-day-btn" onclick="adminDarDias(\'' + u.id + '\', \'' + email + '\', 3)">+3d Demo</button>' +
@@ -2459,3 +2462,6 @@ Cerrar sesión</button>
   </script>
 </body>
 </html>
+
+
+
