@@ -7,21 +7,18 @@
     const CODIGOS_CLIENTES_COMUNES = ["Eduu22"];
     
     // Lista autorizada de administradores principales
-    const ADMINS_AUTORIZADOS = [
-      "iolanycastillo27@gmail.com",
-      "jorgehimawari@gmail.com",
-      "edduardohg18@gmail.com",
-      "admin@cherrystream.com",
-      "llanelymonarca@gmail.com",
-      "Eduu15" // Tu usuario admin principal
-    ];
+      const ADMINS_AUTORIZADOS = [
+    "iolanycastillo27@gmail.com",
+    "llanelymonarca@gmail.com"
+  ];
 
-    const usuarioActual = (localStorage.getItem('cherry_user_code') || '').trim();
+        const usuarioActual = (localStorage.getItem('cherry_user_code') || '').trim().toLowerCase();
+    const esAdminAutorizado = ADMINS_AUTORIZADOS.map(a => a.toLowerCase().trim()).includes(usuarioActual);
 
-    // Si está explícitamente como cliente común o no pertenece a los autorizados
-    if (CODIGOS_CLIENTES_COMUNES.includes(usuarioActual) || (!ADMINS_AUTORIZADOS.includes(usuarioActual) && usuarioActual !== "")) {
-      alert("Acceso denegado: El usuario actual (" + (usuarioActual || "Cliente") + ") no tiene permisos de Administrador.");
+    if (!esAdminAutorizado) {
+      alert("Acceso denegado: El usuario actual (" + (usuarioActual || "Sin Sesión") + ") no tiene permisos de Administrador.");
       window.location.replace("index.html");
+      return;
     }
   })();
 </script>
@@ -761,7 +758,7 @@
           profile: { stringValue: profile },
           pin: { stringValue: pin },
           status: { stringValue: "disponible" },
-          addedBy: { stringValue: "jorgehimawari@gmail.com" }
+          addedBy: { stringValue: (localStorage.getItem("cherry_user_code") || "iolanycastillo27@gmail.com").trim().toLowerCase() }
         }
       };
 

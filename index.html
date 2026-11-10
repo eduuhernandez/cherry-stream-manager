@@ -2827,20 +2827,26 @@ function sendCartWhatsApp() {
 
 <script id="cherry-hide-admin-clients">
   function verificarVisibilidadAdmin() {
-    const ADMINS = ["Eduu15", "iolanycastillo27@gmail.com", , "llanelymonarca@gmail.com"];
-    const code = (localStorage.getItem('cherry_user_code') || '').trim();
+    const ADMINS = [
+      "iolanycastillo27@gmail.com",
+      "llanelymonarca@gmail.com"
+    ];
+    const code = (localStorage.getItem('cherry_user_code') || '').toLowerCase().trim();
     const esAdmin = ADMINS.includes(code);
 
     const gearBtn = document.getElementById("btnHeaderAdminGear");
     const gestorBtn = document.getElementById("btnHeaderGestor");
 
+    // Gestor visible para todo público
+    if (gestorBtn) gestorBtn.style.display = "inline-flex";
+
+    // Panel de administración solo para las dos superadmins
     if (gearBtn) gearBtn.style.display = esAdmin ? "inline-flex" : "none";
-    if (gestorBtn) gestorBtn.style.display = esAdmin ? "inline-flex" : "none";
   }
 
   document.addEventListener("DOMContentLoaded", verificarVisibilidadAdmin);
   window.addEventListener("storage", verificarVisibilidadAdmin);
-  setInterval(verificarVisibilidadAdmin, 1000);
+  setInterval(verificarVisibilidadAdmin, 800);
 </script>
 
 
